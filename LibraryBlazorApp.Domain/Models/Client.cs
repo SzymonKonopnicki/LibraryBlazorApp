@@ -1,4 +1,4 @@
-﻿namespace LibraryBlazorApp.Infrastructure.Data;
+﻿namespace LibraryBlazorApp.Domain.Models;
 
 public class Client : Person
 {
