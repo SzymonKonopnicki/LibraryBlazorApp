@@ -1,4 +1,6 @@
 using LibraryBlazorApp.UI.Components;
+using LibraryBlazorApp.Domain;
+using LibraryBlazorApp.Application;
 using LibraryBlazorApp.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddDomain();
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
 
 var app = builder.Build();
