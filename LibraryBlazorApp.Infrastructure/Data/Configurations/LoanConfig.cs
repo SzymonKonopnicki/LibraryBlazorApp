@@ -20,8 +20,8 @@ public class LoanConfig : IEntityTypeConfiguration<Loan>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(x => x.Book)
-            .WithOne(x => x.Loan)
-            .HasForeignKey<Loan>(x => x.BookId)
+            .WithMany(x => x.Loans)
+            .HasForeignKey(x => x.BookId)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(x => x.BorrowDate)

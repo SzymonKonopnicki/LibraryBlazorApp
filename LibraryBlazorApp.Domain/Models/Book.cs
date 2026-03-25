@@ -9,5 +9,5 @@ public class Book
     public int Quantity { get; set; }
     public int AuthorId { get; set; }
     public Author Author { get; set; } = null!;
-    public Loan Loan { get; set; } = null!;
+    public List<Loan> Loans { get; set; } = new();
 }

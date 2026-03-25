@@ -187,7 +187,7 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                     b.ToTable("LibraryCards");
                 });
 
-            modelBuilder.Entity("LibraryBlazorApp.Domain.Models.Loan", b =>
+            modelBuilder.Entity("LibraryBlazorApp.Domain.Models.Loans", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -250,11 +250,11 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                     b.Navigation("Client");
                 });
 
-            modelBuilder.Entity("LibraryBlazorApp.Domain.Models.Loan", b =>
+            modelBuilder.Entity("LibraryBlazorApp.Domain.Models.Loans", b =>
                 {
                     b.HasOne("LibraryBlazorApp.Domain.Models.Book", "Book")
-                        .WithOne("Loan")
-                        .HasForeignKey("LibraryBlazorApp.Domain.Models.Loan", "BookId")
+                        .WithOne("Loans")
+                        .HasForeignKey("LibraryBlazorApp.Domain.Models.Loans", "BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -276,7 +276,7 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
 
             modelBuilder.Entity("LibraryBlazorApp.Domain.Models.Book", b =>
                 {
-                    b.Navigation("Loan")
+                    b.Navigation("Loans")
                         .IsRequired();
                 });
 

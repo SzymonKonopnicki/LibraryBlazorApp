@@ -1,4 +1,5 @@
 ﻿using LibraryBlazorApp.Domain.Models;
+using LibraryBlazorApp.Infrastructure.Data.Configurations.DataSeed;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryBlazorApp.Infrastructure.Data;
@@ -19,7 +20,15 @@ public class BlazorLibraryDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BlazorLibraryDbContext).Assembly);
+
+        modelBuilder.SeedBooks();
+        modelBuilder.SeedAuthors();
+        modelBuilder.SeedClients();
+        modelBuilder.SeedAddresses();
+        modelBuilder.SeedLibraryCards();
+        modelBuilder.SeedLoans();
+
         base.OnModelCreating(modelBuilder);
     }
 }
