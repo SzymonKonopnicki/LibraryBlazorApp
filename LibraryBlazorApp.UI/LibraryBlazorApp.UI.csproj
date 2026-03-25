@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LibraryBlazorApp.Application\LibraryBlazorApp.Application.csproj" />
+    <ProjectReference Include="..\LibraryBlazorApp.Infrastructure\LibraryBlazorApp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
