@@ -1,5 +1,8 @@
 using MudBlazor.Services;
 using LibraryBlazorApp.UI.Components;
+using LibraryBlazorApp.Domain;
+using LibraryBlazorApp.Infrastructure;
+using LibraryBlazorApp.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +12,11 @@ builder.Services.AddMudServices();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddApplication();
+builder.Services.AddDomain();
+builder.Services.AddInfrastructure();
+
 
 var app = builder.Build();
 

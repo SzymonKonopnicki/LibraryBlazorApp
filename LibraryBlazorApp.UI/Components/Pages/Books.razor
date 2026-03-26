@@ -1,0 +1,136 @@
+﻿@page "/books"
+
+@using LibraryBlazorApp.Application.Dto
+@using LibraryBlazorApp.Application.Interfaces
+@using LibraryBlazorApp.Domain.Models.Enums
+
+@inject IBookHandler _bookHandler
+
+<PageTitle>Books</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">All Available Books</MudText>
+<MudText Typo="Typo.body1" Class="mb-8">This compoennt uses metohds to shows retrive Books from Data base.</MudText>
+
+@if (errorMsg is not null)
+{
+    <MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Start">
+        Error Type: @errorType
+        <br />
+        Error message: @errorMsg
+    </MudAlert>
+}
+else
+{
+    <MudTable Items="_booksDtos" Context="book" Hover="true" Dense="true" SortLabel="Sort By" Elevation="2" AllowUnsorted="false"
+              FixedHeader="true" FixedFooter="true" Height="450px" Striped="true"> 
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<BookDto, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<BookDto, object>(x => x.Quantity)">Quantity</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<BookDto, object>(x => x.AuthorName)">Author Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<BookDto, object>(x => x.AuthorSurname)">Author Surname</MudTableSortLabel></MudTh>
+            <MudTh>Additional</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Title">@book.Title</MudTd>
+            <MudTd DataLabel="Quantity">@book.Quantity</MudTd>
+            <MudTd DataLabel="AuthorName">@book.AuthorName</MudTd>
+            <MudTd DataLabel="AuthorSurname">@book.AuthorSurname</MudTd>
+            <MudTd DataLabel="Additional">
+                <MudButton Variant="@((ExpandedRows.Contains(book.Title) == true) ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small"
+                           Color="@((ExpandedRows.Contains(book.Title) == true) ? Color.Tertiary : Color.Default)"
+                           OnClick="@(() => ShowBtnPress(book.Title))">
+                    @((ExpandedRows.Contains(book.Title) == true) ? "Hide" : "Show")
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+        <ChildRowContent>
+            @if (ExpandedRows.Contains(book.Title))
+            {
+                <MudTr>
+                    <td colspan="8">
+                        <MudStack Spacing="4" Class="border-solid border-2 border-gray-300 pa-4">
+                            <MudCard Elevation="3">
+                                <MudCardHeader>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.body1">Author details</MudText>
+                                    </CardHeaderContent>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudStack Row="true">
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.AuthorName" Label="Name" Variant="Variant.Text">@book.AuthorName</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.AuthorSurname" Label="Surname" Variant="Variant.Text">@book.AuthorSurname</MudTextField>
+                                        </MudItem>
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@book.BirthDate?.ToString("dd.MM.yyyy")"
+                                                          Label="Birth Date"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@book.DeathDate?.ToString("dd.MM.yyyy")"
+                                                          Label="Birth Date"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+
+                                    </MudStack>
+                                    <MudItem class="pa-3">
+                                        <MudTextField ReadOnly="true"
+                                                      T="string"
+                                                      @bind-Value="book.Bio"
+                                                      Label="Biography"
+                                                      Variant="Variant.Outlined"
+                                                      Lines="3"
+                                                      MaxLines="6"
+                                                      Sizing="InputSizing.Auto"
+                                                      Placeholder="Lorem Ipsum is simply dummy text of the printing..." />
+
+                                    </MudItem>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudStack>
+                    </td>
+                </MudTr>
+            }
+        </ChildRowContent>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 10, 50, 100 }" />
+        </PagerContent>
+    </MudTable>
+}
+
+@code {
+    private List<BookDto> _booksDtos = new();
+    private List<string> ExpandedRows = new();
+    private string? errorMsg;
+    private ErrorType? errorType;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _bookHandler.GetAvailableBooksAsync();
+        if (result.IsSuccess)
+        {
+            _booksDtos = result.Value;
+        }
+        else if (!result.IsSuccess)
+        {
+            errorMsg = result.Error.Description;
+            errorType = result.Error.Type;
+        }
+    }
+
+    private void ShowBtnPress(string title)
+    {
+        if (ExpandedRows.Contains(title))
+            ExpandedRows.Remove(title);
+        else
+            ExpandedRows.Add(title);
+    }
+
+}
