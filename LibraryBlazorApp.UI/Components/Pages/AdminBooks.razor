@@ -4,6 +4,7 @@
 @using LibraryBlazorApp.UI.Components.Shared
 
 @inject IAdminBookHandler _bookHandler
+@inject IAdminAuthorHandler _authorHandler
 @inject IDialogService _dialogService
 @inject ISnackbar _snackbar
 
@@ -23,8 +24,10 @@ else
         <ToolBarContent>
             <MudText Typo="Typo.h6">Books - Admin View</MudText>
             <MudSpacer />
+            <MudButton Class="mr-2" Variant="Variant.Filled" Color="Color.Tertiary" OnClick="@(() => DialogAddBookOpenAsync())">Add</MudButton>
             <MudTextField @bind-Value="_searchString" Placeholder="Search"
                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
         </ToolBarContent>
         <HeaderContent>
             <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<BookAdminDto, object>(x => x.Id)">ID</MudTableSortLabel></MudTh>
@@ -64,7 +67,7 @@ else
                                         <MudText Typo="Typo.h6">Book '@book.Title' details:</MudText>
                                     </CardHeaderContent>
                                     <CardHeaderActions>
-                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="@(() => DialogBookOpenAsync(book))"/>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="@(() => DialogBookOpenAsync(book))" />
                                     </CardHeaderActions>
                                 </MudCardHeader>
                                 <MudCardContent>
@@ -87,7 +90,7 @@ else
 
                                     </MudStack>
                                     <MudStack Row="true">
-                                            <MudItem xs="6" Class="pa-3">
+                                        <MudItem xs="6" Class="pa-3">
                                             <MudTextField ReadOnly="true" @bind-Value="book.BookStatus" Label="Status" Variant="Variant.Text">@book.BookStatus</MudTextField>
                                         </MudItem>
                                         <MudItem xs="6" Class="pa-3">
@@ -125,9 +128,9 @@ else
                                         </MudItem>
                                         <MudItem xs="6" Class="pa-3">
                                             <MudTextField ReadOnly="true"
-                                                            Value="@book.AuthorCreatedAt.ToString("dd.MM.yyyy")"
-                                                            Label="Author Created At"
-                                                            Variant="Variant.Filled" />
+                                                          Value="@book.AuthorCreatedAt.ToString("dd.MM.yyyy")"
+                                                          Label="Author Created At"
+                                                          Variant="Variant.Filled" />
                                         </MudItem>
                                     </MudStack>
                                     <MudStack Row="true">
@@ -221,8 +224,8 @@ else
         {
             { x => x.BookDto, bookEdit}
         };
-        var options = new DialogOptions 
-        { 
+        var options = new DialogOptions
+        {
             FullWidth = true,
             MaxWidth = MaxWidth.Medium,
             CloseOnEscapeKey = true,
@@ -245,7 +248,47 @@ else
             }
             else
                 _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
-        }    
+        }
+    }
+    private async Task DialogAddBookOpenAsync()
+    {
+        var authorResult = await _authorHandler.GetAuthorsAsync();
+        if (authorResult.IsSuccess)
+        {
+            var parameters = new DialogParameters<BookAddDialog>
+            {
+                { x => x.AuthorDtos, authorResult.Value}
+            };
+            var options = new DialogOptions
+            {
+                FullWidth = true,
+                MaxWidth = MaxWidth.Medium,
+                CloseOnEscapeKey = true,
+                BackdropClick = false,
+                CloseButton = true
+            };
+            var dialog = await _dialogService.ShowAsync<BookAddDialog>($"Adding a book.", parameters, options);
+            var dialogResult = await dialog.Result;
+
+            if (!dialogResult.Canceled)
+            {
+                var newBook = (BookAddDto)dialogResult.Data;
+                var handlerResult = await _bookHandler.AddBookAsync(newBook);
+
+                if (handlerResult.IsSuccess)
+                {
+                    _bookAdmins.Add(handlerResult.Value);
+                    _snackbar.Add($"Book ID: {handlerResult.Value.Id} Added.", Severity.Success);
+                    StateHasChanged();
+                }
+                else
+                    _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+            }
+        }
+        else
+        {
+            _snackbar.Add($"Something went wrong.", Severity.Info);
+        }
     }
 
     private bool FilterFunc(BookAdminDto book) => FilterFunc(book, _searchString);

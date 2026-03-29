@@ -14,6 +14,15 @@ public class BookAdminCommand : IBookAdminCommand
         _contextFactory = contextFactory;
     }
 
+    public async Task<Result<Book>> AddBookAsync(Book book)
+    {
+        using var dbContext = await _contextFactory.CreateDbContextAsync();
+        await dbContext.AddAsync(book);
+        await dbContext.SaveChangesAsync();
+
+        return await dbContext.Books.Include(a => a.Author).FirstOrDefaultAsync(b => b.Id == book.Id);
+    }
+
     public async Task<Result<Book>> UpdateBookAsync(int bookId, Book book)
     {
         using var dbContext = await _contextFactory.CreateDbContextAsync();

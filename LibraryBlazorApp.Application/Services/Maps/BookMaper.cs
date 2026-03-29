@@ -72,4 +72,15 @@ public static class BookMaper
             Quantity = book.Quantity
         };
     }
+    public static Book ToBook(BookAddDto book)
+    {
+        return new Book()
+        {
+            Title = book.Title,
+            Description = book.Description,
+            Quantity = book.Quantity,
+            AuthorId = book.AuthorId
+        };
+    }
+
 }

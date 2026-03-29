@@ -37,5 +37,13 @@ public class AdminBookHandler : IAdminBookHandler
         var booksDto = BookMaper.ToAdminDto(result.Value);
         return booksDto;
     }
+    public async Task<Result<BookAdminDto>> AddBookAsync(BookAddDto addDto)
+    {
+        var mapBook = BookMaper.ToBook(addDto);
+        var result = await _bookAdminCommand.AddBookAsync(mapBook);
+        if (!result.IsSuccess) return result.Error!;
+        var booksDto = BookMaper.ToAdminDto(result.Value);
+        return booksDto;
+    }
 
 }

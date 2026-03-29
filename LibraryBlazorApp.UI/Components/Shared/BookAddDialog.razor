@@ -1,0 +1,71 @@
+﻿@using LibraryBlazorApp.Application.Dto
+@using FluentValidation
+@using LibraryBlazorApp.Application.Validators
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@BookDto" @ref="@_mudForm" Validation="@(_bookAddDtoValidator.ValidateValue)" ValidationDelay="0">
+            <MudStack Class="m-2">
+                <MudTextField For="@(() => BookDto.Title)"
+                              @bind-Value="BookDto.Title"
+                              Label="Title">
+                    @BookDto.Title
+                </MudTextField>
+
+                <MudSelect @bind-Value="BookDto.AuthorId"
+                           Label="Author"
+                           Placeholder="Choose Author"
+                           Dense="true">
+                    @foreach (var item in AuthorDtos)
+                    {
+                        <MudSelectItem Value="@item.Id">@item.Surname, @item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+
+                <MudNumericField For="@(() => BookDto.Quantity)"
+                                 @bind-Value="BookDto.Quantity"
+                                 Label="Quantity"
+                                 Min="0" />
+                <MudTextField T="string"
+                              For="@(() => BookDto.Description)"
+                              @bind-Value="BookDto.Description"
+                              Label="Book Description"
+                              Variant="Variant.Outlined"
+                              Lines="3"
+                              MaxLines="6"
+                              Sizing="InputSizing.Auto"
+                              Placeholder="Lorem Ipsum is simply dummy text of the printing..." />
+
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter]
+    public List<AuthorDto> AuthorDtos { get; set; } = new();
+
+    [CascadingParameter]
+    private IMudDialogInstance _mudDialog { get; set; }
+    private BookAddDtoValidator _bookAddDtoValidator = new();
+    private MudForm _mudForm;
+    private BookAddDto BookDto { get; set; } = new();
+
+    protected override void OnParametersSet()
+    {
+        if (AuthorDtos.Any())
+            BookDto.AuthorId = AuthorDtos.First().Id;
+    }
+
+    private async Task Submit()
+    {
+        await _mudForm.Validate();
+        if (_mudForm.IsValid)
+            _mudDialog.Close(DialogResult.Ok(BookDto));
+    }
+    private void Cancel() => _mudDialog.Cancel();
+}

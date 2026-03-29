@@ -13,8 +13,10 @@ public static class DependencyInjection
     {
         services.AddScoped<IBookHandler, BookHandler>();
         services.AddScoped<IAdminBookHandler, AdminBookHandler>();
+        services.AddScoped<IAdminAuthorHandler, AdminAuthorHandler>();
 
         services.AddSingleton<IValidator<BookEditDto>, BookEditDtoValidator>();
+        services.AddSingleton<IValidator<BookAddDto>, BookAddDtoValidator>();
 
         return services;
     }
