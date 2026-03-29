@@ -1,6 +1,7 @@
 ﻿using LibraryBlazorApp.Application.Interfaces;
 using LibraryBlazorApp.Infrastructure.Data;
 using LibraryBlazorApp.Infrastructure.Repositories.Querie;
+using LibraryBlazorApp.Infrastructure.Repositories.Queries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +15,7 @@ public static class DependencyInjection
             options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=BlazorLibraryDb;Trusted_Connection=True;"));
 
         services.AddScoped<IBookQuery, BookQuery>();
+        services.AddScoped<IBookAdminCommand, BookAdminCommand>();
 
         return services;
     }
