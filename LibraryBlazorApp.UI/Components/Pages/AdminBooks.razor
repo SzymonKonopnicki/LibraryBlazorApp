@@ -1,0 +1,269 @@
+﻿@page "/admin/books"
+@using LibraryBlazorApp.Application.Dto
+@using LibraryBlazorApp.Application.Interfaces
+@using LibraryBlazorApp.UI.Components.Shared
+
+@inject IAdminBookHandler _bookHandler
+@inject IDialogService _dialogService
+@inject ISnackbar _snackbar
+
+<PageTitle>Admin - Books</PageTitle>
+
+@if (_errorMessage is not null)
+{
+    <MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Start">
+        Error message: @_errorMessage
+    </MudAlert>
+}
+else
+{
+    <MudTable Items="_bookAdmins" T="BookAdminDto" Context="book" Hover="true" Dense="true" SortLabel="Sort By" Class="mt-4" Elevation="2" AllowUnsorted="false"
+              FixedHeader="true" FixedFooter="true" Height="600px" Striped="true" Bordered="true"
+              Filter="new Func<BookAdminDto, bool>(FilterFunc)">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Books - Admin View</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="_searchString" Placeholder="Search"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<BookAdminDto, object>(x => x.Id)">ID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<BookAdminDto, object>(x => x.Title)">Title</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<BookAdminDto, object>(x => x.Quantity)">Quantity</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<BookAdminDto, object>(x => x.BookStatus)">Status</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<BookAdminDto, object>(x => x.AuthorSurname)">Author Surname</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<BookAdminDto, object>(x => x.AuthorName)">Author Name</MudTableSortLabel></MudTh>
+            <MudTh>Additional</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="ID">@book.Id</MudTd>
+            <MudTd DataLabel="Title">@book.Title</MudTd>
+            <MudTd DataLabel="Quantity">@book.Quantity</MudTd>
+            <MudTd DataLabel="BookStatus">@book.BookStatus</MudTd>
+            <MudTd DataLabel="AuthorSurname">@book.AuthorSurname</MudTd>
+            <MudTd DataLabel="AuthorName">@book.AuthorName</MudTd>
+            <MudTd DataLabel="Additional">
+                <MudButton Variant="@((_expandedRows.Contains(book.Id) == true) ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small"
+                           Color="@((_expandedRows.Contains(book.Id) == true) ? Color.Tertiary : Color.Default)"
+                           OnClick="@(() => ShowBtnPress(book.Id))">
+                    @((_expandedRows.Contains(book.Id) == true) ? "Hide" : "Show")
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+        <ChildRowContent>
+            @if (_expandedRows.Contains(book.Id))
+            {
+                <MudTr>
+                    <td colspan="8">
+                        <MudStack Spacing="4" Class="border-solid border-2 border-gray-300 pa-4">
+                            @* BOOK DETAIL *@
+                            <MudCard Elevation="3">
+                                <MudCardHeader>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6">Book '@book.Title' details:</MudText>
+                                    </CardHeaderContent>
+                                    <CardHeaderActions>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="@(() => DialogBookOpenAsync(book))"/>
+                                    </CardHeaderActions>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudStack Row="true">
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.Id" Label="ID" Variant="Variant.Text">@book.Id</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@book.BookCreatedAt.ToString("dd.MM.yyyy")"
+                                                          Label="Book Created At"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@book.BookUpdatedAt.ToString("dd.MM.yyyy")"
+                                                          Label="Book Updated At"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                            <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.BookStatus" Label="Status" Variant="Variant.Text">@book.BookStatus</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudNumericField ReadOnly="true" @bind-Value="book.Quantity" Label="Quantity" Variant="Variant.Text">@book.Quantity</MudNumericField>
+                                        </MudItem>
+                                    </MudStack>
+                                    <MudItem class="pa-3">
+                                        <MudTextField ReadOnly="true"
+                                                      T="string"
+                                                      @bind-Value="book.Description"
+                                                      Label="Book Description"
+                                                      Variant="Variant.Outlined"
+                                                      Lines="3"
+                                                      MaxLines="6"
+                                                      Sizing="InputSizing.Auto"
+                                                      Placeholder="Lorem Ipsum is simply dummy text of the printing..." />
+                                    </MudItem>
+                                </MudCardContent>
+                            </MudCard>
+
+                            @* AUTHOR DETAIL *@
+                            <MudCard Elevation="3">
+                                <MudCardHeader>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6">Author '@book.AuthorSurname, @book.AuthorName' details:</MudText>
+                                    </CardHeaderContent>
+                                    <CardHeaderActions>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                                    </CardHeaderActions>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudStack Row="true">
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.AuthorId" Label="Author ID" Variant="Variant.Text">@book.AuthorId</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                            Value="@book.AuthorCreatedAt.ToString("dd.MM.yyyy")"
+                                                            Label="Author Created At"
+                                                            Variant="Variant.Filled" />
+                                        </MudItem>
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.AuthorName" Label="Name" Variant="Variant.Text">@book.AuthorName</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.AuthorSurname" Label="Surname" Variant="Variant.Text">@book.AuthorSurname</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.AuthorNationality" Label="Nationality" Variant="Variant.Text">@book.AuthorNationality</MudTextField>
+                                        </MudItem>
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@book.BirthDate?.ToString("dd.MM.yyyy")"
+                                                          Label="Birth Date"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@book.DeathDate?.ToString("dd.MM.yyyy")"
+                                                          Label="Death Date"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="book.IsAuthorAlive" Label="Is Active" Variant="Variant.Text">@book.IsAuthorAlive</MudTextField>
+                                        </MudItem>
+
+                                    </MudStack>
+                                    <MudItem class="pa-3">
+                                        <MudTextField ReadOnly="true"
+                                                      T="string"
+                                                      @bind-Value="book.Bio"
+                                                      Label="Biography"
+                                                      Variant="Variant.Outlined"
+                                                      Lines="3"
+                                                      MaxLines="6"
+                                                      Sizing="InputSizing.Auto"
+                                                      Placeholder="Lorem Ipsum is simply dummy text of the printing..." />
+
+                                    </MudItem>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudStack>
+                    </td>
+                </MudTr>
+            }
+
+        </ChildRowContent>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 15, 50, 100 }" />
+        </PagerContent>
+    </MudTable>
+}
+
+
+@code {
+    private List<BookAdminDto> _bookAdmins = new();
+    private string? _errorMessage;
+    private List<int> _expandedRows = new();
+    private string _searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await _bookHandler.GetBooksAsync();
+        if (result.IsSuccess)
+            _bookAdmins = result.Value;
+        else
+            _errorMessage = result.Error.Description;
+    }
+
+    private void ShowBtnPress(int id)
+    {
+        if (_expandedRows.Contains(id))
+            _expandedRows.Remove(id);
+        else
+            _expandedRows.Add(id);
+    }
+    private async Task DialogBookOpenAsync(BookAdminDto adminDto)
+    {
+        BookEditDto bookEdit = new BookEditDto()
+        {
+            Title = adminDto.Title,
+            Description = adminDto.Description,
+            Quantity = adminDto.Quantity
+        };
+
+        var parameters = new DialogParameters<BookFormDialog>
+        {
+            { x => x.BookDto, bookEdit}
+        };
+        var options = new DialogOptions 
+        { 
+            FullWidth = true,
+            MaxWidth = MaxWidth.Medium,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<BookFormDialog>($"Edit Book ID: {adminDto.Id}", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            bookEdit = (BookEditDto)result.Data;
+            var handlerResult = await _bookHandler.EditBookAsync(adminDto.Id, bookEdit);
+            var index = _bookAdmins.FindIndex(b => b.Id == adminDto.Id);
+            if (handlerResult.IsSuccess && index >= 0)
+            {
+                _bookAdmins[index] = handlerResult.Value;
+                _snackbar.Add($"Book ID: {adminDto.Id} Edited.", Severity.Success);
+                StateHasChanged();
+            }
+            else
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+        }    
+    }
+
+    private bool FilterFunc(BookAdminDto book) => FilterFunc(book, _searchString);
+    private bool FilterFunc(BookAdminDto book, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if ($"{book.Id}".Contains(searchString))
+            return true;
+        if (book.Title.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (book.AuthorSurname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (book.AuthorName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (book.BookStatus.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
+
+}

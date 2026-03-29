@@ -1,5 +1,6 @@
 ﻿using LibraryBlazorApp.Application.Interfaces;
 using LibraryBlazorApp.Domain.Models;
+using LibraryBlazorApp.Domain.Models.Results;
 using LibraryBlazorApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,12 +14,29 @@ public class BookQuery : IBookQuery
         _contextFactory = contextFactory;
     }
 
-    public async Task<List<Book>> GetBooksAndAuthorsAsync()
+    public async Task<Result<List<Book>>> GetBooksAndAuthorsAsync()
     {
         await using var dbContext = await _contextFactory.CreateDbContextAsync();
 
-        return await dbContext.Books
+        var booksDb = await dbContext.Books
             .Include(b => b.Author)
             .ToListAsync();
+
+        if (booksDb is null) return Errors.BookNotFound;
+
+        return booksDb;
     }
+    public async Task<Result<Book>> GetBookByIdAsync(int Id)
+    {
+        await using var dbContext = await _contextFactory.CreateDbContextAsync();
+        var bookDb = await dbContext.Books
+            .Include(b => b.Author)
+            .FirstOrDefaultAsync(b => b.Id == Id);
+
+        if (bookDb is null) return Errors.BookNotFound;
+
+        return bookDb;
+    }
+
+
 }

@@ -7,24 +7,35 @@ using LibraryBlazorApp.Domain.Models.Results;
 
 namespace LibraryBlazorApp.Application.Handlers;
 
-public class BookHandler : IBookHandler
+public class AdminBookHandler : IAdminBookHandler
 {
     private readonly IBookQuery _bookQuery;
+    private readonly IBookAdminCommand _bookAdminCommand;
     private readonly IBookPolicy _bookPolicy;
-    public BookHandler(IBookQuery bookQuery, IBookPolicy bookPolicy)
+    public AdminBookHandler(IBookQuery bookQuery, IBookAdminCommand bookAdminCommand, IBookPolicy bookPolicy)
     {
+        _bookAdminCommand = bookAdminCommand;
         _bookQuery = bookQuery;
         _bookPolicy = bookPolicy;
     }
 
-    public async Task<Result<List<BookDto>>> GetAvailableBooksAsync()
+    public async Task<Result<List<BookAdminDto>>> GetBooksAsync()
     {
         var dbBooksResult = await _bookQuery.GetBooksAndAuthorsAsync();
         if (!dbBooksResult.IsSuccess) return dbBooksResult.Error!;
         Result<IEnumerable<Book>> result = _bookPolicy.HasAnyBooks(dbBooksResult.Value);
         if (!result.IsSuccess) return result.Error!;
-        var booksDto = BookMaper.ToDto(result.Value);
-
+        var booksDto = BookMaper.ToAdminDto(result.Value);
         return booksDto.ToList();
+
     }
+    public async Task<Result<BookAdminDto>> EditBookAsync(int bookId, BookEditDto editDto)
+    {
+        var mapBook = BookMaper.ToBook(editDto);
+        var result = await _bookAdminCommand.UpdateBookAsync(bookId, mapBook);
+        if (!result.IsSuccess) return result.Error!;
+        var booksDto = BookMaper.ToAdminDto(result.Value);
+        return booksDto;
+    }
+
 }

@@ -1,8 +1,10 @@
 ﻿using LibraryBlazorApp.Domain.Models;
+using LibraryBlazorApp.Domain.Models.Results;
 
 namespace LibraryBlazorApp.Application.Interfaces;
 
 public interface IBookQuery
 {
-    public Task<List<Book>> GetBooksAndAuthorsAsync();
+    public Task<Result<List<Book>>> GetBooksAndAuthorsAsync();
+    public Task<Result<Book>> GetBookByIdAsync(int Id);
 }
