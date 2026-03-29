@@ -23,6 +23,7 @@ public static class AuthorSeedExtension
             {
                 Id = 1,
                 CreatedAt = seedDate[0],
+                UpdatedAt = seedDate[0],
                 Name = "Jan",
                 Surname = "Kowalski",
                 Bio = "Polski pisarz specjalizujący się w literaturze kryminalnej i thrillerach psychologicznych.",
@@ -33,6 +34,7 @@ public static class AuthorSeedExtension
             {
                 Id = 2,
                 CreatedAt = seedDate[1],
+                UpdatedAt = seedDate[1],
                 Name = "Anna",
                 Surname = "Nowak",
                 Bio = "Autorka bestsellerowych powieści obyczajowych i romansów.",
@@ -43,6 +45,7 @@ public static class AuthorSeedExtension
             {
                 Id = 3,
                 CreatedAt = seedDate[2],
+                UpdatedAt = seedDate[2],
                 Name = "Marek",
                 Surname = "Zieliński",
                 Bio = "Twórca epickich powieści fantasy inspirowanych mitologią słowiańską.",
@@ -53,6 +56,7 @@ public static class AuthorSeedExtension
             {
                 Id = 4,
                 CreatedAt = seedDate[3],
+                UpdatedAt = seedDate[3],
                 Name = "Katarzyna",
                 Surname = "Wiśniewska",
                 Bio = "Pisarka science fiction, koncentrująca się na sztucznej inteligencji i przyszłości technologii.",
@@ -63,6 +67,7 @@ public static class AuthorSeedExtension
             {
                 Id = 5,
                 CreatedAt = seedDate[4],
+                UpdatedAt = seedDate[4],
                 Name = "Tomasz",
                 Surname = "Lewandowski",
                 Bio = "Autor książek popularnonaukowych z zakresu psychologii i rozwoju osobistego.",
@@ -73,6 +78,7 @@ public static class AuthorSeedExtension
             {
                 Id = 6,
                 CreatedAt = seedDate[5],
+                UpdatedAt = seedDate[5],
                 Name = "Anonim",
                 Surname = "",
                 Bio = "Autor pozostający w ukryciu. Tożsamość nieznana, brak potwierdzonych informacji biograficznych.",

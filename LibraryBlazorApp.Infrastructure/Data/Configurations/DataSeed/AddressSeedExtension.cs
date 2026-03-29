@@ -26,6 +26,7 @@ public static class AddressSeedExtension
             {
                 Id = 1,
                 CreatedAt = seedDate[0],
+                UpdatedAt = seedDate[0],
                 City = "Warszawa",
                 Street = "Kwiatowa 1",
                 PostalCode = "00-001",
@@ -36,6 +37,7 @@ public static class AddressSeedExtension
             {
                 Id = 2,
                 CreatedAt = seedDate[1],
+                UpdatedAt = seedDate[1],
                 City = "Kraków",
                 Street = "Słoneczna 5",
                 PostalCode = "30-002",
@@ -46,6 +48,7 @@ public static class AddressSeedExtension
             {
                 Id = 3,
                 CreatedAt = seedDate[2],
+                UpdatedAt = seedDate[2],
                 City = "Gdańsk",
                 Street = "Leśna 10",
                 PostalCode = "80-003",
@@ -56,6 +59,7 @@ public static class AddressSeedExtension
             {
                 Id = 4,
                 CreatedAt = seedDate[3],
+                UpdatedAt = seedDate[3],
                 City = "Wrocław",
                 Street = "Polna 3",
                 PostalCode = "50-004",
@@ -66,6 +70,7 @@ public static class AddressSeedExtension
             {
                 Id = 5,
                 CreatedAt = seedDate[4],
+                UpdatedAt = seedDate[4],
                 City = "Poznań",
                 Street = "Szkolna 7",
                 PostalCode = "60-005",
@@ -76,6 +81,7 @@ public static class AddressSeedExtension
             {
                 Id = 6,
                 CreatedAt = seedDate[5],
+                UpdatedAt = seedDate[5],
                 City = "Łódź",
                 Street = "Ogrodowa 12",
                 PostalCode = "90-006",
@@ -86,6 +92,7 @@ public static class AddressSeedExtension
             {
                 Id = 7,
                 CreatedAt = seedDate[6],
+                UpdatedAt = seedDate[6],
                 City = "Katowice",
                 Street = "Lipowa 9",
                 PostalCode = "40-007",
@@ -96,6 +103,7 @@ public static class AddressSeedExtension
             {
                 Id = 8,
                 CreatedAt = seedDate[7],
+                UpdatedAt = seedDate[7],
                 City = "Lublin",
                 Street = "Brzozowa 15",
                 PostalCode = "20-008",
@@ -106,6 +114,7 @@ public static class AddressSeedExtension
             {
                 Id = 9,
                 CreatedAt = seedDate[8],
+                UpdatedAt = seedDate[8],
                 City = "Szczecin",
                 Street = "Wiślana 20",
                 PostalCode = "70-009",
@@ -116,6 +125,7 @@ public static class AddressSeedExtension
             {
                 Id = 10,
                 CreatedAt = seedDate[9],
+                UpdatedAt = seedDate[9],
                 City = "Bydgoszcz",
                 Street = "Zielona 8",
                 PostalCode = "85-010",

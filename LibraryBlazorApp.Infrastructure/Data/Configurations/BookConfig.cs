@@ -18,6 +18,10 @@ public class BookConfig : IEntityTypeConfiguration<Book>
             .HasColumnType("datetime2")
             .IsRequired();
 
+        builder.Property(x => x.UpdatedAt)
+            .HasColumnType("datetime2")
+            .IsRequired();
+
         builder.Property(x => x.Title)
             .IsRequired()
             .HasMaxLength(150);

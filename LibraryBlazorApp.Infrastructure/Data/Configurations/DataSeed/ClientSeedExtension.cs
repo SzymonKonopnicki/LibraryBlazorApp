@@ -31,6 +31,7 @@ public static class ClientSeedExtension
             {
                 Id = 1,
                 CreatedAt = seedDate[0],
+                UpdatedAt = seedDate[0],
                 Name = "Adam",
                 Surname = "Nowicki",
                 Email = "adam.nowicki@example.com",
@@ -40,6 +41,7 @@ public static class ClientSeedExtension
             {
                 Id = 2,
                 CreatedAt = seedDate[1],
+                UpdatedAt = seedDate[1],
                 Name = "Ewa",
                 Surname = "Kaczmarek",
                 Email = "ewa.kaczmarek@example.com",
@@ -49,6 +51,7 @@ public static class ClientSeedExtension
             {
                 Id = 3,
                 CreatedAt = seedDate[2],
+                UpdatedAt = seedDate[2],
                 Name = "Piotr",
                 Surname = "Mazur",
                 Email = "piotr.mazur@example.com",
@@ -58,6 +61,7 @@ public static class ClientSeedExtension
             {
                 Id = 4,
                 CreatedAt = seedDate[3],
+                UpdatedAt = seedDate[3],
                 Name = "Karolina",
                 Surname = "Dąbrowska",
                 Email = "karolina.dabrowska@example.com",
@@ -67,6 +71,7 @@ public static class ClientSeedExtension
             {
                 Id = 5,
                 CreatedAt = seedDate[4],
+                UpdatedAt = seedDate[4],
                 Name = "Michał",
                 Surname = "Piotrowski",
                 Email = "michal.piotrowski@example.com",
@@ -76,6 +81,7 @@ public static class ClientSeedExtension
             {
                 Id = 6,
                 CreatedAt = seedDate[5],
+                UpdatedAt = seedDate[5],
                 Name = "Natalia",
                 Surname = "Grabowska",
                 Email = "natalia.grabowska@example.com",
@@ -85,6 +91,7 @@ public static class ClientSeedExtension
             {
                 Id = 7,
                 CreatedAt = seedDate[6],
+                UpdatedAt = seedDate[6],
                 Name = "Krzysztof",
                 Surname = "Pawlak",
                 Email = "krzysztof.pawlak@example.com",
@@ -94,6 +101,7 @@ public static class ClientSeedExtension
             {
                 Id = 8,
                 CreatedAt = seedDate[7],
+                UpdatedAt = seedDate[7],
                 Name = "Magdalena",
                 Surname = "Michalska",
                 Email = "magdalena.michalska@example.com",
@@ -103,6 +111,7 @@ public static class ClientSeedExtension
             {
                 Id = 9,
                 CreatedAt = seedDate[8],
+                UpdatedAt = seedDate[8],
                 Name = "Paweł",
                 Surname = "Król",
                 Email = "pawel.krol@example.com",
@@ -112,6 +121,7 @@ public static class ClientSeedExtension
             {
                 Id = 10,
                 CreatedAt = seedDate[9],
+                UpdatedAt = seedDate[9],
                 Name = "Agnieszka",
                 Surname = "Wieczorek",
                 Email = "agnieszka.wieczorek@example.com",
