@@ -18,6 +18,7 @@ public static class DependencyInjection
         services.AddSingleton<IValidator<BookEditDto>, BookEditDtoValidator>();
         services.AddSingleton<IValidator<BookAddDto>, BookAddDtoValidator>();
         services.AddSingleton<IValidator<AuthorAddDto>, AuthorAddDtoValidator>();
+        services.AddSingleton<IValidator<AuthorEditAdminDto>, AuthorEditAdminDtoValidator>();
 
         return services;
     }

@@ -1,0 +1,69 @@
+﻿@using LibraryBlazorApp.Application.Dto
+@using FluentValidation
+@using LibraryBlazorApp.Application.Validators
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@AuthorEdit" @ref="@_mudForm" Validation="@(_authorEditDtoValidator.ValidateValue)" ValidationDelay="0">
+            <MudStack Class="m-2">
+                <MudStack Row="true">
+                    <MudTextField For="@(() => AuthorEdit.Name)"
+                                  @bind-Value="AuthorEdit.Name"
+                                  Label="Name">
+                        @AuthorEdit.Name
+                    </MudTextField>
+                    <MudTextField For="@(() => AuthorEdit.Surname)"
+                                  @bind-Value="AuthorEdit.Surname"
+                                  Label="Surname">
+                        @AuthorEdit.Surname
+                    </MudTextField>
+
+                </MudStack>
+
+                <MudTextField For="@(() => AuthorEdit.Nationality)"
+                              @bind-Value="AuthorEdit.Nationality"
+                              Label="Nationality">
+                    @AuthorEdit.Nationality
+                </MudTextField>
+
+                <MudStack Row="true">
+                    <MudDatePicker Label="Birth Date" For="@(() => AuthorEdit.BirthDate)" @bind-Date="AuthorEdit.BirthDate" DateFormat="dd.MM.yyyy" Clearable="true" />
+                    <MudDatePicker Label="Death Date" For="@(() => AuthorEdit.DeathDate)" @bind-Date="AuthorEdit.DeathDate" DateFormat="dd.MM.yyyy" Clearable="true" />
+                </MudStack>
+
+                <MudTextField T="string"
+                              For="@(() => AuthorEdit.Bio)"
+                              @bind-Value="AuthorEdit.Bio"
+                              Label="Author biography"
+                              Variant="Variant.Outlined"
+                              Lines="3"
+                              MaxLines="6"
+                              Sizing="InputSizing.Auto"
+                              Placeholder="Lorem Ipsum is simply dummy text of the printing..." />
+
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter]
+    public AuthorEditAdminDto AuthorEdit { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance _mudDialog { get; set; }
+    private AuthorEditAdminDtoValidator _authorEditDtoValidator = new();
+    private MudForm _mudForm;
+
+    private async Task Submit()
+    {
+        await _mudForm.Validate();
+        if (_mudForm.IsValid)
+            _mudDialog.Close(DialogResult.Ok(AuthorEdit));
+    }
+    private void Cancel() => _mudDialog.Cancel();
+}

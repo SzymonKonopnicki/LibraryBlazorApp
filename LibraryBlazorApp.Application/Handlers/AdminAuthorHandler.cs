@@ -39,4 +39,20 @@ public class AdminAuthorHandler : IAdminAuthorHandler
         var authorDtoMap = AuthorMaper.ToAuthorAdminDto(commandResult.Value);
         return authorDtoMap;
     }
+
+    public async Task<Result<int>> DeleteBooksByIdsAsync(List<int> ids)
+    {
+        var commandResult = await _adminCommand.DeleteAuthorAsync(ids);
+        if (!commandResult.IsSuccess) return commandResult.Error!;
+        return commandResult;
+    }
+
+    public async Task<Result<AuthorAdminDto>> EditAuthorAsync(int authorId, AuthorEditAdminDto authorEdit)
+    {
+        var mapAuthor = AuthorMaper.ToAuthor(authorEdit);
+        var commandResult = await _adminCommand.EditAuthorAsync(authorId, mapAuthor);
+        if (!commandResult.IsSuccess) return commandResult.Error!;
+        var mapAuthorDto = AuthorMaper.ToAuthorAdminDto(commandResult.Value);
+        return mapAuthorDto;
+    }
 }

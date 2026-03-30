@@ -73,7 +73,7 @@ else
                                         <MudText Typo="Typo.h6">Author '@author.Name, @author.Surname' details:</MudText>
                                     </CardHeaderContent>
                                     <CardHeaderActions>
-                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="(() => DialogAuthorOpenAsync(author))" />
                                     </CardHeaderActions>
                                 </MudCardHeader>
                                 <MudCardContent>
@@ -169,8 +169,86 @@ else
             _errorMessage = handlerResult.Error.Description;
     }
 
-    private async Task DeleteSelectedAsync() { }
-    private async Task DialogAuthorOpenAsync(AuthorAdminDto adminDto) { }
+    private async Task DeleteSelectedAsync()
+    {
+        var parameters = new DialogParameters<ConfirmDialog>
+        {
+            { x => x.ContentText, "Do you really want to delete these records? This process cannot be undone." },
+            { x => x.ButtonText, "Delete" },
+            { x => x.Color, Color.Error }
+        };
+
+        var options = new DialogOptions()
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.ExtraSmall,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<ConfirmDialog>("Delete", parameters, options);
+        var dialogResult = await dialog.Result;
+        if (!dialogResult.Canceled)
+        {
+            var handlerResult = await _authorHandler.DeleteBooksByIdsAsync(_selectedAuthors.Select(b => b.Id).ToList());
+            if (handlerResult.IsSuccess)
+            {
+                _adminDtos.RemoveAll(b => _selectedAuthors.Select(s => s.Id).Contains(b.Id));
+                _snackbar.Add($"Deleted {handlerResult.Value} author{(handlerResult.Value >= 1 ? "" : "s")}.", Severity.Success);
+                _selectedAuthors.Clear();
+                StateHasChanged();
+            }
+            else
+            {
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+            }
+        }
+
+
+    }
+    private async Task DialogAuthorOpenAsync(AuthorAdminDto authorDto)
+    {
+        AuthorEditAdminDto authorEdit = new AuthorEditAdminDto()
+        {
+            Name = authorDto.Name,
+            Surname = authorDto.Surname,
+            Bio = authorDto.Bio,
+            BirthDate = authorDto.BirthDate,
+            DeathDate = authorDto.DeathDate,
+            Nationality = authorDto.Nationality
+        };
+
+        var parameters = new DialogParameters<AuthorFormDialog>
+        {
+            { x => x.AuthorEdit, authorEdit }
+        };
+        var options = new DialogOptions
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Medium,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<AuthorFormDialog>($"Edit Author ID: {authorDto.Id}", parameters, options);
+        var dialogResult = await dialog.Result;
+
+        if (!dialogResult.Canceled)
+        {
+            authorEdit = (AuthorEditAdminDto)dialogResult.Data;
+            var handlerResult = await _authorHandler.EditAuthorAsync(authorDto.Id, authorEdit);
+            var index = _adminDtos.FindIndex(b => b.Id == authorDto.Id);
+            if (handlerResult.IsSuccess && index >= 0)
+            {
+                _adminDtos[index] = handlerResult.Value;
+                _snackbar.Add($"Author ID: {authorDto.Id} Edited.", Severity.Success);
+                StateHasChanged();
+            }
+            else
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+        }
+
+    }
     private async Task DialogAddAuthorOpenAsync()
     {
         var parameters = new DialogParameters<AuthorAddDialog>();
