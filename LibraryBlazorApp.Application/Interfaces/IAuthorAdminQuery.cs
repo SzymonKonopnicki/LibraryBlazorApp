@@ -5,5 +5,5 @@ namespace LibraryBlazorApp.Application.Interfaces;
 
 public interface IAuthorAdminQuery
 {
-    public Task<Result<List<Author>>> GetAuthors();
+    public Task<Result<List<Author>>> GetAuthorsAsync();
 }

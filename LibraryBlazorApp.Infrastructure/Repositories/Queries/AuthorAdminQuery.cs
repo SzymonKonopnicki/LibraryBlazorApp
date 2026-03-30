@@ -14,7 +14,7 @@ public class AuthorAdminQuery : IAuthorAdminQuery
         _contextFactory = contextFactory;
     }
 
-    public async Task<Result<List<Author>>> GetAuthors()
+    public async Task<Result<List<Author>>> GetAuthorsAsync()
     {
         using var dbContext = await _contextFactory.CreateDbContextAsync();
 

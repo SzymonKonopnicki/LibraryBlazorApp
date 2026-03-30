@@ -15,7 +15,7 @@ public class AdminAuthorHandler : IAdminAuthorHandler
 
     public async Task<Result<List<AuthorDto>>> GetAuthorsAsync()
     {
-        var result = await _adminQuery.GetAuthors();
+        var result = await _adminQuery.GetAuthorsAsync();
         if (!result.IsSuccess) return result.Error!;
         var authorMap = AuthorMaper.ToAuthorDto(result.Value);
         return authorMap;
