@@ -20,11 +20,16 @@ else
 {
     <MudTable Items="_bookAdmins" T="BookAdminDto" Context="book" Hover="true" Dense="true" SortLabel="Sort By" Class="mt-4" Elevation="2" AllowUnsorted="false"
               FixedHeader="true" FixedFooter="true" Height="600px" Striped="true" Bordered="true"
-              Filter="new Func<BookAdminDto, bool>(FilterFunc)">
+              Filter="new Func<BookAdminDto, bool>(FilterFunc)"
+              MultiSelection="true" @bind-SelectedItems="_selectedBooks">
         <ToolBarContent>
             <MudText Typo="Typo.h6">Books - Admin View</MudText>
             <MudSpacer />
             <MudButton Class="mr-2" Variant="Variant.Filled" Color="Color.Tertiary" OnClick="@(() => DialogAddBookOpenAsync())">Add</MudButton>
+            <MudButton Class="mr-2" Variant="Variant.Filled" 
+                Color="Color.Error" 
+                Disabled="_selectedBooks.Any() ? false : true"
+                OnClick="@(() => DeleteSelectedAsync())">Delete</MudButton>
             <MudTextField @bind-Value="_searchString" Placeholder="Search"
                           Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
 
@@ -194,6 +199,7 @@ else
     private string? _errorMessage;
     private List<int> _expandedRows = new();
     private string _searchString = "";
+    private HashSet<BookAdminDto> _selectedBooks = new HashSet<BookAdminDto>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -210,6 +216,42 @@ else
             _expandedRows.Remove(id);
         else
             _expandedRows.Add(id);
+    }
+    private async Task DeleteSelectedAsync()
+    {
+        var parameters = new DialogParameters<ConfirmDialog>
+        {
+            { x => x.ContentText, "Do you really want to delete these records? This process cannot be undone." },
+            { x => x.ButtonText, "Delete" },
+            { x => x.Color, Color.Error }
+        };
+
+        var options = new DialogOptions() 
+        { 
+            FullWidth = true,
+            MaxWidth = MaxWidth.ExtraSmall,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<ConfirmDialog>("Delete", parameters, options);
+        var dialogResult = await dialog.Result;
+        if (!dialogResult.Canceled)
+        {
+            var handlerResult = await _bookHandler.DeleteBooksAsync(_selectedBooks.Select(b => b.Id).ToList());
+            if (handlerResult.IsSuccess)
+            {
+                _bookAdmins.RemoveAll(b => _selectedBooks.Select(s => s.Id).Contains(b.Id));
+                _snackbar.Add($"Deleted {handlerResult.Value} book{(handlerResult.Value >= 1 ? "" : "s")}", Severity.Success);
+                _selectedBooks.Clear();
+                StateHasChanged();
+            }
+            else
+            {
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+            }
+        }
+
     }
     private async Task DialogBookOpenAsync(BookAdminDto adminDto)
     {
@@ -308,5 +350,4 @@ else
             return true;
         return false;
     }
-
 }

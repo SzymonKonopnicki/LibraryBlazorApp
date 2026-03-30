@@ -45,5 +45,10 @@ public class AdminBookHandler : IAdminBookHandler
         var booksDto = BookMaper.ToAdminDto(result.Value);
         return booksDto;
     }
-
+    public async Task<Result<int>> DeleteBooksAsync(List<int> booksId)
+    {
+        var commandResult = await _bookAdminCommand.DeleteBooksAsync(booksId);
+        if (!commandResult.IsSuccess) return commandResult.Error!;
+        return commandResult;
+    }
 }

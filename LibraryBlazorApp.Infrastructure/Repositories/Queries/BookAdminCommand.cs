@@ -1,4 +1,5 @@
-﻿using LibraryBlazorApp.Application.Interfaces;
+﻿using Azure.Core;
+using LibraryBlazorApp.Application.Interfaces;
 using LibraryBlazorApp.Domain.Models;
 using LibraryBlazorApp.Domain.Models.Results;
 using LibraryBlazorApp.Infrastructure.Data;
@@ -40,5 +41,14 @@ public class BookAdminCommand : IBookAdminCommand
         dbContext.Update(bookDb);
         await dbContext.SaveChangesAsync();
         return bookDb;
+    }
+    public async Task<Result<int>> DeleteBooksAsync(List<int> booksId)
+    {
+        using var dbContext = await _contextFactory.CreateDbContextAsync();
+        var toRemove = dbContext.Books.Where(b => booksId.Contains(b.Id)).ToList();
+        if (toRemove is null) return Errors.BookNotFound;
+        dbContext.Books.RemoveRange(toRemove);
+        await dbContext.SaveChangesAsync();
+        return toRemove.Count;
     }
 }
