@@ -233,11 +233,11 @@ else
             CloseButton = true
         };
         var dialog = await _dialogService.ShowAsync<BookFormDialog>($"Edit Book ID: {adminDto.Id}", parameters, options);
-        var result = await dialog.Result;
+        var dialogResult = await dialog.Result;
 
-        if (!result.Canceled)
+        if (!dialogResult.Canceled)
         {
-            bookEdit = (BookEditDto)result.Data;
+            bookEdit = (BookEditDto)dialogResult.Data;
             var handlerResult = await _bookHandler.EditBookAsync(adminDto.Id, bookEdit);
             var index = _bookAdmins.FindIndex(b => b.Id == adminDto.Id);
             if (handlerResult.IsSuccess && index >= 0)
