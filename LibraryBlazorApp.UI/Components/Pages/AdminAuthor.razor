@@ -1,23 +1,201 @@
-﻿@page "/admin/author"
+﻿@page "/admin/authors"
+@using LibraryBlazorApp.Application.Dto
+@using LibraryBlazorApp.Application.Interfaces
+
+@inject IAdminAuthorHandler _authorHandler
 
 <PageTitle>Admin - Authors</PageTitle>
 
-
-
 @if (_errorMessage is not null)
 {
-    <MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Start">
-        Error message: @_errorMessage
-    </MudAlert>
+    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
 }
 else
 {
+    <MudTable Items="_adminDtos" T="AuthorAdminDto" Context="author" Hover="true" Dense="true" SortLabel="Sort By" Class="mt-4" Elevation="2" AllowUnsorted="false"
+              FixedHeader="true" FixedFooter="true" Height="600px" Striped="true" Bordered="true"
+              Filter="new Func<AuthorAdminDto, bool>(FilterFunc)"
+              MultiSelection="true" @bind-SelectedItems="_selectedAuthors">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Books - Admin View</MudText>
+            <MudSpacer />
+            <MudButton Class="mr-2" Variant="Variant.Filled"
+                       Color="Color.Tertiary"
+                       OnClick="@(() => DialogAddAuthorOpenAsync())">Add</MudButton>
 
+            <MudButton Class="mr-2" Variant="Variant.Filled"
+                       Color="Color.Error"
+                       Disabled="_selectedAuthors.Any() ? false : true"
+                       OnClick="@(() => DeleteSelectedAsync())">Delete</MudButton>
+
+            <MudTextField @bind-Value="_searchString" Placeholder="Search"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<AuthorAdminDto, object>(x => x.Id)">ID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<AuthorAdminDto, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<AuthorAdminDto, object>(x => x.Surname)">Surname</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<AuthorAdminDto, object>(x => x.IsStillAlive)">Status</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<AuthorAdminDto, object>(x => x.Nationality)">Nationality</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<AuthorAdminDto, object>(x => x.AuthorBooksCount)">Author Books Count</MudTableSortLabel></MudTh>
+            <MudTh>Additional</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="ID">@author.Id</MudTd>
+            <MudTd DataLabel="Name">@author.Name</MudTd>
+            <MudTd DataLabel="Surname">@author.Surname</MudTd>
+            <MudTd DataLabel="IsStillAlive">@author.IsStillAlive</MudTd>
+            <MudTd DataLabel="Nationality">@author.Nationality</MudTd>
+            <MudTd DataLabel="AuthorBooksCount">@author.AuthorBooksCount</MudTd>
+            <MudTd DataLabel="Additional">
+                <MudButton Variant="@((_expandedRows.Contains(author.Id) == true) ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small"
+                           Color="@((_expandedRows.Contains(author.Id) == true) ? Color.Tertiary : Color.Default)"
+                           OnClick="@(() => ShowBtnPress(author.Id))">
+                    @((_expandedRows.Contains(author.Id) == true) ? "Hide" : "Show")
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+        <ChildRowContent>
+            @if (_expandedRows.Contains(author.Id))
+            {
+                <MudTr>
+                    <td colspan="8">
+                        <MudStack Spacing="4" Class="border-solid border-2 border-gray-300 pa-4">
+                            @* AUTHOR DETAIL *@
+                            <MudCard Elevation="3">
+                                <MudCardHeader>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6">Author '@author.Name, @author.Surname' details:</MudText>
+                                    </CardHeaderContent>
+                                    <CardHeaderActions>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" />
+                                    </CardHeaderActions>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudStack Row="true">
+                                        <MudItem xs="3" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="author.Id" Label="Author ID" Variant="Variant.Text">@author.Id</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="3" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="author.AuthorBooksCount" Label="Author Books Count" Variant="Variant.Text">@author.AuthorBooksCount</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="3" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@author.CreatedAt.ToString("dd.MM.yyyy")"
+                                                          Label="Author Created At"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                        <MudItem xs="3" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@author.UpdatedAt.ToString("dd.MM.yyyy")"
+                                                          Label="Author Updated At"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="author.Name" Label="Name" Variant="Variant.Text">@author.Name</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="author.Surname" Label="Surname" Variant="Variant.Text">@author.Surname</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="author.Nationality" Label="Nationality" Variant="Variant.Text">@author.Nationality</MudTextField>
+                                        </MudItem>
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@author.BirthDate?.ToString("dd.MM.yyyy")"
+                                                          Label="Birth Date"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@author.DeathDate?.ToString("dd.MM.yyyy")"
+                                                          Label="Death Date"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="author.IsStillAlive" Label="Is Active" Variant="Variant.Text">@author.IsStillAlive</MudTextField>
+                                        </MudItem>
+
+                                    </MudStack>
+                                    <MudItem class="pa-3">
+                                        <MudTextField ReadOnly="true"
+                                                      T="string"
+                                                      @bind-Value="author.Bio"
+                                                      Label="Biography"
+                                                      Variant="Variant.Outlined"
+                                                      Lines="3"
+                                                      MaxLines="6"
+                                                      Sizing="InputSizing.Auto"
+                                                      Placeholder="Lorem Ipsum is simply dummy text of the printing..." />
+
+                                    </MudItem>
+                                </MudCardContent>
+                            </MudCard>
+                        </MudStack>
+                    </td>
+                </MudTr>
+            }
+
+        </ChildRowContent>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 15, 50, 100 }" />
+        </PagerContent>
+    </MudTable>
 }
 
 
 @code {
+    private List<AuthorAdminDto> _adminDtos = new();
+    private string? _errorMessage;
+    private string _searchString = "";
+    private HashSet<AuthorAdminDto> _selectedAuthors = new HashSet<AuthorAdminDto>();
+    private List<int> _expandedRows = new();
 
+    protected async override Task OnInitializedAsync()
+    {
+        var handlerResult = await _authorHandler.GeAuthorAdminDtosAsync();
+        if (handlerResult.IsSuccess)
+            _adminDtos = handlerResult.Value;
+        else
+            _errorMessage = handlerResult.Error.Description;
+    }
 
+    private async Task DeleteSelectedAsync() { }
+    private async Task DialogAuthorOpenAsync(AuthorAdminDto adminDto) { }
+    private async Task DialogAddAuthorOpenAsync() { }
+
+    private void ShowBtnPress(int id)
+    {
+        if (_expandedRows.Contains(id))
+            _expandedRows.Remove(id);
+        else
+            _expandedRows.Add(id);
+    }
+
+    private bool FilterFunc(AuthorAdminDto book) => FilterFunc(book, _searchString);
+    private bool FilterFunc(AuthorAdminDto book, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if ($"{book.Id}".Contains(searchString))
+            return true;
+        if (book.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (book.Surname.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (book.IsStillAlive.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (book.Nationality.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (book.AuthorBooksCount.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
+    }
 
 }

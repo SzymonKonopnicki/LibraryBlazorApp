@@ -20,4 +20,13 @@ public class AdminAuthorHandler : IAdminAuthorHandler
         var authorMap = AuthorMaper.ToAuthorDto(result.Value);
         return authorMap;
     }
+
+    public async Task<Result<List<AuthorAdminDto>>> GeAuthorAdminDtosAsync()
+    {
+        var queryResult = await _adminQuery.GetAuthorsWithBooksAsync();
+        if (!queryResult.IsSuccess) return queryResult.Error!;
+        var authorsMap = AuthorMaper.ToAuthorAdminDto(queryResult.Value);
+        return authorsMap;
+    }
+
 }

@@ -23,4 +23,14 @@ public class AuthorAdminQuery : IAuthorAdminQuery
 
         return authors;
     }
+
+    public async Task<Result<List<Author>>> GetAuthorsWithBooksAsync()
+    {
+        using var dbContext = await _contextFactory.CreateDbContextAsync();
+        var authors = await dbContext.Authors
+            .Include(a => a.Books)
+            .ToListAsync();
+        if (!authors.Any()) return Errors.NoAuthorsAvailable;
+        return authors;
+    }
 }
