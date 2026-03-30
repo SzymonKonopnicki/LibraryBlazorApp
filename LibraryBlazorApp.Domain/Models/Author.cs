@@ -17,4 +17,5 @@ public class Author : Person
         else
             return "Alive";
     }
+    public int QuantityOfWrittenBooks() => Books.Count();
 }
