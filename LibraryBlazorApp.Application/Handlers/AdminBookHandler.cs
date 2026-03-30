@@ -23,7 +23,7 @@ public class AdminBookHandler : IAdminBookHandler
     {
         var dbBooksResult = await _bookQuery.GetBooksAndAuthorsAsync();
         if (!dbBooksResult.IsSuccess) return dbBooksResult.Error!;
-        Result<IEnumerable<Book>> result = _bookPolicy.HasAnyBooks(dbBooksResult.Value);
+        Result<IEnumerable<Book>> result = _bookPolicy.HasZeroOrMoreBooks(dbBooksResult.Value);
         if (!result.IsSuccess) return result.Error!;
         var booksDto = BookMaper.ToAdminDto(result.Value);
         return booksDto.ToList();
