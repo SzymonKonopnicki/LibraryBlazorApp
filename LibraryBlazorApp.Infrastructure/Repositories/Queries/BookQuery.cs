@@ -22,7 +22,7 @@ public class BookQuery : IBookQuery
             .Include(b => b.Author)
             .ToListAsync();
 
-        if (booksDb is null) return Errors.BookNotFound;
+        if (!booksDb.Any()) return Errors.BookNotFound;
 
         return booksDb;
     }

@@ -19,7 +19,7 @@ public class AuthorAdminQuery : IAuthorAdminQuery
         using var dbContext = await _contextFactory.CreateDbContextAsync();
 
         var authors = await dbContext.Authors.ToListAsync();
-        if (authors is null) return Errors.NoAuthorsAvailable;
+        if (!authors.Any()) return Errors.NoAuthorsAvailable;
 
         return authors;
     }
