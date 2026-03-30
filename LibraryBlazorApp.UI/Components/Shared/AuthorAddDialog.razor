@@ -1,0 +1,68 @@
+﻿@using LibraryBlazorApp.Application.Dto
+@using FluentValidation
+@using LibraryBlazorApp.Application.Validators
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@_authorDto" @ref="@_mudForm" Validation="@(_authorAddDtoValidator.ValidateValue)" ValidationDelay="0">
+            <MudStack Class="m-2">
+                <MudStack Row="true">
+                    <MudTextField For="@(() => _authorDto.Name)"
+                                  @bind-Value="_authorDto.Name"
+                                  Label="Name">
+                        @_authorDto.Name
+                    </MudTextField>
+                    <MudTextField For="@(() => _authorDto.Surname)"
+                                  @bind-Value="_authorDto.Surname"
+                                  Label="Surname">
+                        @_authorDto.Surname
+                    </MudTextField>
+
+                </MudStack>
+
+                <MudTextField For="@(() => _authorDto.Nationality)"
+                              @bind-Value="_authorDto.Nationality"
+                              Label="Nationality">
+                    @_authorDto.Nationality
+                </MudTextField>
+
+                <MudStack Row="true">
+                    <MudDatePicker Label="Birth Date" For="@(() => _authorDto.BirthDate)" @bind-Date="_authorDto.BirthDate" DateFormat="dd.MM.yyyy" />
+                    <MudDatePicker Label="Death Date" For="@(() => _authorDto.DeathDate)" @bind-Date="_authorDto.DeathDate" DateFormat="dd.MM.yyyy" />
+                </MudStack>
+
+                <MudTextField T="string"
+                              For="@(() => _authorDto.Bio)"
+                              @bind-Value="_authorDto.Bio"
+                              Label="Author biography"
+                              Variant="Variant.Outlined"
+                              Lines="3"
+                              MaxLines="6"
+                              Sizing="InputSizing.Auto"
+                              Placeholder="Lorem Ipsum is simply dummy text of the printing..." />
+
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance _mudDialog { get; set; }
+    private AuthorAddDtoValidator _authorAddDtoValidator = new();
+    private MudForm _mudForm;
+    private AuthorAddDto _authorDto { get; set; } = new();
+
+
+    private async Task Submit()
+    {
+        await _mudForm.Validate();
+        if (_mudForm.IsValid)
+            _mudDialog.Close(DialogResult.Ok(_authorDto));
+    }
+    private void Cancel() => _mudDialog.Cancel();
+}

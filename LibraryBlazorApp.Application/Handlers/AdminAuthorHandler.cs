@@ -8,9 +8,11 @@ namespace LibraryBlazorApp.Application.Handlers;
 public class AdminAuthorHandler : IAdminAuthorHandler
 {
     private readonly IAuthorAdminQuery _adminQuery;
-    public AdminAuthorHandler(IAuthorAdminQuery adminQuery)
+    private readonly IAuthorAdminCommand _adminCommand;
+    public AdminAuthorHandler(IAuthorAdminQuery adminQuery, IAuthorAdminCommand adminCommand)
     {
         _adminQuery = adminQuery;
+        _adminCommand = adminCommand;
     }
 
     public async Task<Result<List<AuthorDto>>> GetAuthorsAsync()
@@ -29,4 +31,12 @@ public class AdminAuthorHandler : IAdminAuthorHandler
         return authorsMap;
     }
 
+    public async Task<Result<AuthorAdminDto>> AddAuthorAddDtoAsync(AuthorAddDto addDto)
+    {
+        var authorMap = AuthorMaper.ToAuthor(addDto);
+        var commandResult = await _adminCommand.AddAuthorAsync(authorMap);
+        if (!commandResult.IsSuccess) return commandResult.Error!;
+        var authorDtoMap = AuthorMaper.ToAuthorAdminDto(commandResult.Value);
+        return authorDtoMap;
+    }
 }

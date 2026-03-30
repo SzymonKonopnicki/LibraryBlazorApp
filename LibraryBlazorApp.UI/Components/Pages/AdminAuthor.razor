@@ -1,8 +1,11 @@
 ﻿@page "/admin/authors"
 @using LibraryBlazorApp.Application.Dto
 @using LibraryBlazorApp.Application.Interfaces
+@using LibraryBlazorApp.UI.Components.Shared
 
 @inject IAdminAuthorHandler _authorHandler
+@inject IDialogService _dialogService
+@inject ISnackbar _snackbar
 
 <PageTitle>Admin - Authors</PageTitle>
 
@@ -168,7 +171,35 @@ else
 
     private async Task DeleteSelectedAsync() { }
     private async Task DialogAuthorOpenAsync(AuthorAdminDto adminDto) { }
-    private async Task DialogAddAuthorOpenAsync() { }
+    private async Task DialogAddAuthorOpenAsync()
+    {
+        var parameters = new DialogParameters<AuthorAddDialog>();
+        var options = new DialogOptions
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Medium,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<AuthorAddDialog>($"Adding a author.", parameters, options);
+        var dialogResult = await dialog.Result;
+
+        if (!dialogResult.Canceled)
+        {
+            var newBook = (AuthorAddDto)dialogResult.Data;
+            var handlerResult = await _authorHandler.AddAuthorAddDtoAsync(newBook);
+
+            if (handlerResult.IsSuccess)
+            {
+                _adminDtos.Add(handlerResult.Value);
+                _snackbar.Add($"Book ID: {handlerResult.Value.Id} Added.", Severity.Success);
+                StateHasChanged();
+            }
+            else
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+        }    
+    }
 
     private void ShowBtnPress(int id)
     {
