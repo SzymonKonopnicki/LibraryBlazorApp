@@ -1,0 +1,293 @@
+﻿@page "/admin/clients"
+
+@using LibraryBlazorApp.Application.Dto
+@using LibraryBlazorApp.Application.Interfaces
+@using LibraryBlazorApp.UI.Components.Shared
+
+
+@inject IDialogService _dialogService
+@inject ISnackbar _snackbar
+@inject IAdminClientHandler _clientHandler
+
+<PageTitle>Admin - Clients</PageTitle>
+
+@if (_errorMessage is not null)
+{
+    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
+}
+else
+{
+    <MudTable Items="_adminDtos" T="ClientAdminDto" Context="client" Hover="true" Dense="true" SortLabel="Sort By" Class="mt-4" Elevation="2" AllowUnsorted="false"
+              FixedHeader="true" FixedFooter="true" Height="600px" Striped="true" Bordered="true"
+              Filter="new Func<ClientAdminDto, bool>(FilterFunc)"
+              MultiSelection="true" @bind-SelectedItems="_selectedClients">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Client - Admin View</MudText>
+            <MudSpacer />
+            <MudButton Class="mr-2" Variant="Variant.Filled"
+                       Color="Color.Tertiary"
+                       OnClick="@(() => DialogAddClientOpenAsync())">Add</MudButton>
+
+            <MudButton Class="mr-2" Variant="Variant.Filled"
+                       Color="Color.Error"
+                       Disabled="_selectedClients.Any() ? false : true"
+                       OnClick="@(() => DeleteSelectedAsync())">Delete</MudButton>
+
+            <MudTextField @bind-Value="_searchString" Placeholder="Search"
+                          Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ClientAdminDto, object>(x => x.Id)">ID</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ClientAdminDto, object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ClientAdminDto, object>(x => x.Surname)">Surname</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ClientAdminDto, object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ClientAdminDto, object>(x => x.PhoneNumber)">PhoneNumber</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<ClientAdminDto, object>(x => x.City)">City</MudTableSortLabel></MudTh>
+            <MudTh>Additional</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="ID">@client.Id</MudTd>
+            <MudTd DataLabel="Name">@client.Name</MudTd>
+            <MudTd DataLabel="Surname">@client.Surname</MudTd>
+            <MudTd DataLabel="Email">@client.Email</MudTd>
+            <MudTd DataLabel="PhoneNumber">@client.PhoneNumber</MudTd>
+            <MudTd DataLabel="City">@client.City</MudTd>
+            <MudTd DataLabel="Additional">
+                <MudButton Variant="@((_expandedRows.Contains(client.Id) == true) ? Variant.Filled : Variant.Outlined)"
+                           Size="Size.Small"
+                           Color="@((_expandedRows.Contains(client.Id) == true) ? Color.Tertiary : Color.Default)"
+                           OnClick="@(() => ShowBtnPress(client.Id))">
+                    @((_expandedRows.Contains(client.Id) == true) ? "Hide" : "Show")
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+        <ChildRowContent>
+            @if (_expandedRows.Contains(client.Id))
+            {
+                <MudTr>
+                    <td colspan="8">
+                        <MudStack Spacing="4" Class="border-solid border-2 border-gray-300 pa-4">
+                            @* Client DETAIL *@
+                            <MudCard Elevation="3">
+                                <MudCardHeader>
+                                    <CardHeaderContent>
+                                        <MudText Typo="Typo.h6">Client '@client.Name, @client.Surname' details:</MudText>
+                                    </CardHeaderContent>
+                                    <CardHeaderActions>
+                                        <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" OnClick="(() => DialogClientOpenAsync(client))" />
+                                    </CardHeaderActions>
+                                </MudCardHeader>
+                                <MudCardContent>
+                                    <MudStack Row="true">
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.Id" Label="Client ID" Variant="Variant.Text">@client.Id</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@client.CreatedAt.ToString("dd.MM.yyyy")"
+                                                          Label="Author Created At"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                        <MudItem xs="4" Class="pa-3">
+                                            <MudTextField ReadOnly="true"
+                                                          Value="@client.UpdatedAt.ToString("dd.MM.yyyy")"
+                                                          Label="Author Updated At"
+                                                          Variant="Variant.Filled" />
+                                        </MudItem>
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.Name" Label="Name" Variant="Variant.Text">@client.Name</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.Surname" Label="Surname" Variant="Variant.Text">@client.Surname</MudTextField>
+                                        </MudItem>
+                                    </MudStack>
+                                    <MudStack Row="true">
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.Email" Label="Email" Variant="Variant.Text">@client.Email</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="6" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.PhoneNumber" Label="Phone Number" Variant="Variant.Text">@client.PhoneNumber</MudTextField>
+                                        </MudItem>
+                                    </MudStack>
+
+                                    <MudStack Row="true">
+                                        <MudItem xs="3" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.PostalCode" Label="Postal Code" Variant="Variant.Text">@client.PostalCode</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="3" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.Country" Label="Country" Variant="Variant.Text">@client.Country</MudTextField>
+                                        </MudItem>
+
+                                        <MudItem xs="3" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.City" Label="City" Variant="Variant.Text">@client.City</MudTextField>
+                                        </MudItem>
+                                        <MudItem xs="3" Class="pa-3">
+                                            <MudTextField ReadOnly="true" @bind-Value="client.Street" Label="Street" Variant="Variant.Text">@client.Street</MudTextField>
+                                        </MudItem>
+
+                                    </MudStack>
+
+                                </MudCardContent>
+                            </MudCard>
+                        </MudStack>
+                    </td>
+                </MudTr>
+            }
+        </ChildRowContent>
+        <PagerContent>
+            <MudTablePager PageSizeOptions="new int[] { 15, 50, 100 }" />
+        </PagerContent>
+    </MudTable>
+}
+
+
+@code {
+    private List<ClientAdminDto> _adminDtos = new();
+    private string? _errorMessage;
+    private string _searchString = "";
+    private HashSet<ClientAdminDto> _selectedClients = new HashSet<ClientAdminDto>();
+    private List<int> _expandedRows = new();
+
+    protected async override Task OnInitializedAsync()
+    {
+        var handlerResult = await _clientHandler.GetAdminClientAsync();
+        if (handlerResult.IsSuccess)
+            _adminDtos = handlerResult.Value;
+        else
+            _errorMessage = handlerResult.Error.Description;
+    }
+
+    private async Task DeleteSelectedAsync()
+    {
+        var parameters = new DialogParameters<ConfirmDialog>
+        {
+            { x => x.ContentText, "Do you really want to delete these records? This process cannot be undone." },
+            { x => x.ButtonText, "Delete" },
+            { x => x.Color, Color.Error }
+        };
+
+        var options = new DialogOptions()
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.ExtraSmall,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<ConfirmDialog>("Delete", parameters, options);
+        var dialogResult = await dialog.Result;
+        if (!dialogResult.Canceled)
+        {
+            var handlerResult = await _clientHandler.DeleteAdminBooksByIdsAsync(_selectedClients.Select(b => b.Id).ToList());
+            if (handlerResult.IsSuccess)
+            {
+                _adminDtos.RemoveAll(b => _selectedClients.Select(s => s.Id).Contains(b.Id));
+                _snackbar.Add($"Deleted {handlerResult.Value} author{(handlerResult.Value >= 1 ? "" : "s")}.", Severity.Success);
+                _selectedClients.Clear();
+                StateHasChanged();
+            }
+            else
+            {
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+            }
+        }
+
+
+    }
+    private async Task DialogClientOpenAsync(ClientAdminDto clientDto)
+    {
+        ClientEditAdminDto clientEdit = new ClientEditAdminDto()
+        {
+            Name = clientDto.Name,
+            Surname = clientDto.Surname,
+            Email = clientDto.Email,
+            PhoneNumber = clientDto.PhoneNumber,
+            City = clientDto.City,
+            Street = clientDto.Street,
+            PostalCode = clientDto.PostalCode,
+            Country = clientDto.Country
+        };
+
+        var parameters = new DialogParameters<ClientFormDialog>
+        {
+            { x => x.ClientEdit, clientEdit }
+        };
+        var options = new DialogOptions
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Medium,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<ClientFormDialog>($"Edit Client ID: {clientDto.Id}", parameters, options);
+        var dialogResult = await dialog.Result;
+
+        if (!dialogResult.Canceled)
+        {
+            clientEdit = (ClientEditAdminDto)dialogResult.Data;
+            var handlerResult = await _clientHandler.EditAdminAuthorAsync(clientDto.Id, clientEdit);
+            var index = _adminDtos.FindIndex(b => b.Id == clientDto.Id);
+            if (handlerResult.IsSuccess && index >= 0)
+            {
+                _adminDtos[index] = handlerResult.Value;
+                _snackbar.Add($"Author ID: {clientDto.Id} Edited.", Severity.Success);
+                StateHasChanged();
+            }
+            else
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+        }
+
+    }
+    private async Task DialogAddClientOpenAsync()
+    {
+        var parameters = new DialogParameters<AuthorAddDialog>();
+        var options = new DialogOptions
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.Medium,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<ClientAddDialog>($"Adding a author.", parameters, options);
+        var dialogResult = await dialog.Result;
+
+        if (!dialogResult.Canceled)
+        {
+            var newClient = (ClientAddAdminDto)dialogResult.Data;
+            var handlerResult = await _clientHandler.AddAdminClientDtoAsync(newClient);
+
+            if (handlerResult.IsSuccess)
+            {
+                _adminDtos.Add(handlerResult.Value);
+                _snackbar.Add($"Book ID: {handlerResult.Value.Id} Added.", Severity.Success);
+                StateHasChanged();
+            }
+            else
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+        }
+    }
+
+    private void ShowBtnPress(int id)
+    {
+        if (_expandedRows.Contains(id))
+            _expandedRows.Remove(id);
+        else
+            _expandedRows.Add(id);
+    }
+
+    private bool FilterFunc(ClientAdminDto client) => FilterFunc(client, _searchString);
+    private bool FilterFunc(ClientAdminDto client, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if ($"{client.Id}".Contains(searchString))
+            return true;
+        return false;
+    }
+
+}

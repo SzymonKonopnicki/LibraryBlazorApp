@@ -1,0 +1,81 @@
+﻿@using LibraryBlazorApp.Application.Dto
+@using FluentValidation
+@using LibraryBlazorApp.Application.Validators
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@_clientDto" @ref="@_mudForm" Validation="@(_clientAddDtoValidator.ValidateValue)" ValidationDelay="0">
+            <MudStack Class="m-2">
+                <MudStack Row="true">
+                    <MudTextField For="@(() => _clientDto.Name)"
+                                  @bind-Value="_clientDto.Name"
+                                  Label="Name">
+                        @_clientDto.Name
+                    </MudTextField>
+                    <MudTextField For="@(() => _clientDto.Surname)"
+                                  @bind-Value="_clientDto.Surname"
+                                  Label="Surname">
+                        @_clientDto.Surname
+                    </MudTextField>
+
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField For="@(() => _clientDto.Email)"
+                                  @bind-Value="_clientDto.Email"
+                                  Label="Email">
+                        @_clientDto.Email
+                    </MudTextField>
+                    <MudTextField For="@(() => _clientDto.PhoneNumber)"
+                                  @bind-Value="_clientDto.PhoneNumber"
+                                  Label="Phone number">
+                        @_clientDto.PhoneNumber
+                    </MudTextField>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField For="@(() => _clientDto.Country)"
+                                  @bind-Value="_clientDto.Country"
+                                  Label="Country">
+                        @_clientDto.Country
+                    </MudTextField>
+                    <MudTextField For="@(() => _clientDto.PostalCode)"
+                                  @bind-Value="_clientDto.PostalCode"
+                                  Label="Postal Code">
+                        @_clientDto.PostalCode
+                    </MudTextField>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField For="@(() => _clientDto.City)"
+                                  @bind-Value="_clientDto.City"
+                                  Label="City">
+                        @_clientDto.City
+                    </MudTextField>
+                    <MudTextField For="@(() => _clientDto.Street)"
+                                  @bind-Value="_clientDto.Street"
+                                  Label="Street">
+                        @_clientDto.Street
+                    </MudTextField>
+                </MudStack>
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance _mudDialog { get; set; }
+    private ClientAddDtoValidator _clientAddDtoValidator = new();
+    private MudForm _mudForm;
+    private ClientAddAdminDto _clientDto { get; set; } = new();
+
+    private async Task Submit()
+    {
+        await _mudForm.Validate();
+        if (_mudForm.IsValid)
+            _mudDialog.Close(DialogResult.Ok(_clientDto));
+    }
+    private void Cancel() => _mudDialog.Cancel();
+}

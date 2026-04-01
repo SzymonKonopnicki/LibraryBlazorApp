@@ -1,0 +1,82 @@
+﻿@using LibraryBlazorApp.Application.Dto
+@using FluentValidation
+@using LibraryBlazorApp.Application.Validators
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@ClientEdit" @ref="@_mudForm" Validation="@(_clientEditDtoValidator.ValidateValue)" ValidationDelay="0">
+            <MudStack Class="m-2">
+                <MudStack Row="true">
+                    <MudTextField For="@(() => ClientEdit.Name)"
+                                  @bind-Value="ClientEdit.Name"
+                                  Label="Name">
+                        @ClientEdit.Name
+                    </MudTextField>
+                    <MudTextField For="@(() => ClientEdit.Surname)"
+                                  @bind-Value="ClientEdit.Surname"
+                                  Label="Surname">
+                        @ClientEdit.Surname
+                    </MudTextField>
+
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField For="@(() => ClientEdit.Email)"
+                                  @bind-Value="ClientEdit.Email"
+                                  Label="Email">
+                        @ClientEdit.Email
+                    </MudTextField>
+                    <MudTextField For="@(() => ClientEdit.PhoneNumber)"
+                                  @bind-Value="ClientEdit.PhoneNumber"
+                                  Label="Phone number">
+                        @ClientEdit.PhoneNumber
+                    </MudTextField>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField For="@(() => ClientEdit.Country)"
+                                  @bind-Value="ClientEdit.Country"
+                                  Label="Country">
+                        @ClientEdit.Country
+                    </MudTextField>
+                    <MudTextField For="@(() => ClientEdit.PostalCode)"
+                                  @bind-Value="ClientEdit.PostalCode"
+                                  Label="Postal Code">
+                        @ClientEdit.PostalCode
+                    </MudTextField>
+                </MudStack>
+                <MudStack Row="true">
+                    <MudTextField For="@(() => ClientEdit.City)"
+                                  @bind-Value="ClientEdit.City"
+                                  Label="City">
+                        @ClientEdit.City
+                    </MudTextField>
+                    <MudTextField For="@(() => ClientEdit.Street)"
+                                  @bind-Value="ClientEdit.Street"
+                                  Label="Street">
+                        @ClientEdit.Street
+                    </MudTextField>
+                </MudStack>
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter]
+    public ClientEditAdminDto ClientEdit { get; set; }
+    [CascadingParameter]
+    private IMudDialogInstance _mudDialog { get; set; }
+    private ClientEditDtoValidator _clientEditDtoValidator = new();
+    private MudForm _mudForm;
+
+    private async Task Submit()
+    {
+        await _mudForm.Validate();
+        if (_mudForm.IsValid)
+            _mudDialog.Close(DialogResult.Ok(ClientEdit));
+    }
+    private void Cancel() => _mudDialog.Cancel();
+}

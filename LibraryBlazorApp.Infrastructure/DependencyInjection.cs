@@ -19,6 +19,8 @@ public static class DependencyInjection
         services.AddScoped<IBookAdminCommand, BookAdminCommand>();
         services.AddScoped<IAuthorAdminQuery, AuthorAdminQuery>();
         services.AddScoped<IAuthorAdminCommand, AuthorAdminCommand>();
+        services.AddScoped<IAdminClientQuery, AdminClientQuery>();
+        services.AddScoped<IAdminClientCommand, AdminClientCommand>();
 
         return services;
     }

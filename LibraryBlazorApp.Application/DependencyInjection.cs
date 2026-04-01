@@ -14,11 +14,14 @@ public static class DependencyInjection
         services.AddScoped<IBookHandler, BookHandler>();
         services.AddScoped<IAdminBookHandler, AdminBookHandler>();
         services.AddScoped<IAdminAuthorHandler, AdminAuthorHandler>();
+        services.AddScoped<IAdminClientHandler, AdminClientHandler>();
 
         services.AddSingleton<IValidator<BookEditDto>, BookEditDtoValidator>();
         services.AddSingleton<IValidator<BookAddDto>, BookAddDtoValidator>();
         services.AddSingleton<IValidator<AuthorAddDto>, AuthorAddDtoValidator>();
         services.AddSingleton<IValidator<AuthorEditAdminDto>, AuthorEditAdminDtoValidator>();
+        services.AddSingleton<IValidator<ClientAddAdminDto>, ClientAddDtoValidator>();
+        services.AddSingleton<IValidator<ClientEditAdminDto>, ClientEditDtoValidator>();
 
         return services;
     }
