@@ -185,7 +185,7 @@ else
             if (handlerResult.IsSuccess)
             {
                 _adminDtos.RemoveAll(b => _selectedClients.Select(s => s.Id).Contains(b.Id));
-                _snackbar.Add($"Deleted {handlerResult.Value} author{(handlerResult.Value >= 1 ? "" : "s")}.", Severity.Success);
+                _snackbar.Add($"Deleted {handlerResult.Value} Client{(handlerResult.Value >= 1 ? "" : "s")} with Library Card.", Severity.Success);
                 _selectedClients.Clear();
                 StateHasChanged();
             }

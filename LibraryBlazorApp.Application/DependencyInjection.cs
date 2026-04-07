@@ -15,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<IAdminBookHandler, AdminBookHandler>();
         services.AddScoped<IAdminAuthorHandler, AdminAuthorHandler>();
         services.AddScoped<IAdminClientHandler, AdminClientHandler>();
+        services.AddScoped<IAdminLibraryCardHandler, AdminLibraryCardHandler>();
 
         services.AddSingleton<IValidator<BookEditDto>, BookEditDtoValidator>();
         services.AddSingleton<IValidator<BookAddDto>, BookAddDtoValidator>();
