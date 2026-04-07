@@ -10,4 +10,13 @@ public class Loan
     public DateTime BorrowDate { get; set; } = DateTime.UtcNow;
     public DateTime? ReturnedDate { get; set; }
 
+    public string ReturnedStatus() => ReturnedDate is null ? "Borrowed" : "Returned";
+    public string PenaltyForDetention()
+    {
+        if (ReturnedDate is null)
+            if ((DateTime.UtcNow - BorrowDate).TotalDays > 30)
+                return "Yes";
+        return "No";
+    }
+
 }
