@@ -19,7 +19,7 @@ public class BookQuery : IBookQuery
         await using var dbContext = await _contextFactory.CreateDbContextAsync();
 
         var booksDb = await dbContext.Books
-            .Include(b => b.Author)
+            .Include(b => b.Author).OrderBy(b => b.Author.Surname)
             .ToListAsync();
 
         if (!booksDb.Any()) return Errors.BookNotFound;
