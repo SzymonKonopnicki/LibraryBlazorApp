@@ -41,6 +41,17 @@ public static class BookMaper
             IsAuthorAlive = b.Author.IsStillAlive()
         }).ToList();
     }
+    public static IEnumerable<LoanBookDto> ToLoanBookDto(IEnumerable<Book> books)
+    {
+        return books.Select(b => new LoanBookDto
+        {
+            BookId = b.Id,
+            Name = b.Author.Name,
+            Surname = b.Author.Surname,
+            Title = b.Title,
+            Quantity = b.Quantity,
+        }).ToList();
+    }
     public static BookAdminDto ToAdminDto(Book book)
     {
         return new BookAdminDto()
