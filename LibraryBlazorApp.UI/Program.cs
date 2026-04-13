@@ -1,8 +1,10 @@
-using MudBlazor.Services;
-using LibraryBlazorApp.UI.Components;
+using LibraryBlazorApp.Application;
 using LibraryBlazorApp.Domain;
 using LibraryBlazorApp.Infrastructure;
-using LibraryBlazorApp.Application;
+using LibraryBlazorApp.UI.Components;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,11 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddApplication();
 builder.Services.AddDomain();
-builder.Services.AddInfrastructure();
+
+var conString = builder.Configuration.GetConnectionString("DefaultConnection") ??
+     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddInfrastructure(conString);
 
 
 var app = builder.Build();

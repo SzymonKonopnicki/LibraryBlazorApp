@@ -13,9 +13,12 @@ public class BlazorLibraryDbContext : DbContext
     public DbSet<LibraryCard> LibraryCards { get; set; }
     public DbSet<Loan> Loans { get; set; }
 
+    public BlazorLibraryDbContext(DbContextOptions<BlazorLibraryDbContext> options) : base(options)
+    {
+    }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=BlazorLibraryDb;Trusted_Connection=True;");
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
