@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<IAdminClientCommand, AdminClientCommand>();
         services.AddScoped<IAdminLibraryCardQuery, AdminLibraryCardQuery>();
         services.AddScoped<IAdminLibraryCardCommand, AdminLibraryCardCommand>();
+        services.AddScoped<IAdminLoanCommand, AdminLoanCommand>();
 
         return services;
     }

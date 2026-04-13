@@ -8,5 +8,6 @@ public interface IBookAdminCommand
     public Task<Result<Book>> AddBookAsync(Book book);
     public Task<Result<Book>> UpdateBookAsync(int bookId, Book book);
     public Task<Result<int>> DeleteBooksAsync(List<int> booksId);
-
+    public Task<Result> IncreaseBookQuantityAsync(int bookId, int add);
+    public Task<Result> DecreaseBookQuantityAsync(int bookId, int subtract);
 }

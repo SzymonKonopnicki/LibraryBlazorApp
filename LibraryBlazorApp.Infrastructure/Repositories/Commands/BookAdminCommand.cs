@@ -51,4 +51,24 @@ public class BookAdminCommand : IBookAdminCommand
         await dbContext.SaveChangesAsync();
         return toRemove.Count;
     }
+
+    public async Task<Result> IncreaseBookQuantityAsync(int bookId, int add)
+    {
+        using var dbContext = await _contextFactory.CreateDbContextAsync();
+        var bookDb = await dbContext.Books.FirstOrDefaultAsync(b => b.Id == bookId);
+        if (bookDb == null) return Errors.BookNotFound;
+        bookDb.Quantity += add;
+        await dbContext.SaveChangesAsync();
+        return Result.Success();
+    }
+
+    public async Task<Result> DecreaseBookQuantityAsync(int bookId, int subtract)
+    {
+        using var dbContext = await _contextFactory.CreateDbContextAsync();
+        var bookDb = await dbContext.Books.FirstOrDefaultAsync(b => b.Id == bookId);
+        if (bookDb == null) return Errors.BookNotFound;
+        bookDb.Quantity -= subtract;
+        await dbContext.SaveChangesAsync();
+        return Result.Success();
+    }
 }

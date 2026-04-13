@@ -7,5 +7,5 @@ public interface IBookPolicy
 {
     public Result<IEnumerable<Book>> HasAnyBooks(IEnumerable<Book> books);
     public Result<IEnumerable<Book>> HasZeroOrMoreBooks(IEnumerable<Book> books);
-
+    public Result<IEnumerable<Book>> HasOneOrMoreBooks(IEnumerable<Book> books);
 }

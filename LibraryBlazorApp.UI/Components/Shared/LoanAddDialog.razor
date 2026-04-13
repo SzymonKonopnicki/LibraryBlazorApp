@@ -1,0 +1,51 @@
+﻿@using LibraryBlazorApp.Application.Dto
+
+<MudDialog>
+    <DialogContent>
+        <MudForm Model="@LoanAddDto" @ref="@_mudForm" ValidationDelay="0">
+            <MudStack Class="m-2">
+
+                <MudSelect @bind-Value="LoanAddDto.BookId"
+                           Label="Select book" 
+                           HelperText="Surname, Name - Title, Quantity"
+                           Placeholder="Please Select" 
+                           AdornmentIcon="@Icons.Material.Filled.Book"
+                           AdornmentColor="Color.Primary">
+                    @foreach (var item in LoanBookDtos)
+                    {
+                        <MudSelectItem Value="@item.BookId">@($"{(item.Surname == "" ? "" : ((item.Surname + ", ")))}{item.Name} - {item.Title}, Qty:{item.Quantity}")</MudSelectItem>
+                    }
+                </MudSelect>
+
+            </MudStack>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private IMudDialogInstance _mudDialog { get; set; }
+    [Parameter]
+    public List<LoanBookDto> LoanBookDtos { get; set; } = new();
+
+    public LoanAddDto LoanAddDto { get; set; } = new();
+
+    private MudForm _mudForm;
+
+    protected override void OnParametersSet()
+    {
+        if (LoanBookDtos.Any())
+            LoanAddDto.BookId = LoanBookDtos.First().BookId;
+    }
+    private async Task Submit()
+    {
+        await _mudForm.Validate();
+        if (_mudForm.IsValid)
+            _mudDialog.Close(DialogResult.Ok(LoanAddDto));
+    }
+    private void Cancel() => _mudDialog.Cancel();
+}

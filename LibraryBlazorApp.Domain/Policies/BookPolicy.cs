@@ -23,5 +23,14 @@ public class BookPolicy : IBookPolicy
 
         return (Result<IEnumerable<Book>>)available;
     }
+    public Result<IEnumerable<Book>> HasOneOrMoreBooks(IEnumerable<Book> books)
+    {
+        var available = books.Where(b => b.Quantity >= 1).ToList();
+        if (!available.Any())
+            return Errors.NoBooksAvailable;
+
+        return (Result<IEnumerable<Book>>)available;
+    }
+
 
 }

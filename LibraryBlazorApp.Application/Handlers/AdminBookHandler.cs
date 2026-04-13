@@ -27,7 +27,15 @@ public class AdminBookHandler : IAdminBookHandler
         if (!result.IsSuccess) return result.Error!;
         var booksDto = BookMaper.ToAdminDto(result.Value);
         return booksDto.ToList();
-
+    }
+    public async Task<Result<List<LoanBookDto>>> GetBooksForLoanAsync()
+    {
+        var dbBooksResult = await _bookQuery.GetBooksAndAuthorsAsync();
+        if (!dbBooksResult.IsSuccess) return dbBooksResult.Error!;
+        Result<IEnumerable<Book>> result = _bookPolicy.HasOneOrMoreBooks(dbBooksResult.Value);
+        if (!result.IsSuccess) return result.Error!;
+        var booksDto = BookMaper.ToLoanBookDto(result.Value);
+        return booksDto.ToList();
     }
     public async Task<Result<BookAdminDto>> EditBookAsync(int bookId, BookEditDto editDto)
     {

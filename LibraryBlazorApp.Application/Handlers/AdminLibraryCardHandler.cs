@@ -8,11 +8,16 @@ namespace LibraryBlazorApp.Application.Handlers;
 public class AdminLibraryCardHandler : IAdminLibraryCardHandler
 {
     private readonly IAdminLibraryCardQuery _cardQuery;
+    private readonly IAdminLoanCommand _loanComannd;
     private readonly IAdminClientCommand _clientCommand;
-    public AdminLibraryCardHandler(IAdminLibraryCardQuery cardQuery, IAdminClientCommand clientCommand)
+    private readonly IBookAdminCommand _bookCommand;
+
+    public AdminLibraryCardHandler(IAdminLibraryCardQuery cardQuery, IAdminLoanCommand loanComannd, IAdminClientCommand clientCommand, IBookAdminCommand bookCommand)
     {
         _cardQuery = cardQuery;
+        _loanComannd = loanComannd;
         _clientCommand = clientCommand;
+        _bookCommand = bookCommand;
     }
     public async Task<Result<List<LibraryCardAdminDto>>> GetLibraryCardAdminDtoAsync()
     {
@@ -36,5 +41,28 @@ public class AdminLibraryCardHandler : IAdminLibraryCardHandler
         if (!commandResult.IsSuccess) return commandResult.Error!;
         var cardDtoMap = CardMaper.ToLibraryCardAdminDto(commandResult.Value.LibraryCard);
         return cardDtoMap;
+    }
+
+    public async Task<Result<LibraryCardAdminDto>> AddLoanToCardDtoAsync(LoanAddDto loanAdd)
+    {
+        var commandResult = await _loanComannd.CreateLoanAsync(loanAdd);
+        if (!commandResult.IsSuccess) return commandResult.Error!;
+        var bookCommandReslut = await _bookCommand.DecreaseBookQuantityAsync(loanAdd.BookId, 1);
+        if (!bookCommandReslut.IsSuccess) return bookCommandReslut.Error!;
+        var cardQueryResult = await _cardQuery.GetLibraryCardAsync(loanAdd.LibraryCardId);
+        if (!cardQueryResult.IsSuccess) return cardQueryResult.Error!;
+        var cardMap = CardMaper.ToLibraryCardAdminDto(cardQueryResult.Value);
+        return cardMap;
+    }
+
+    public async Task<Result<LibraryCardAdminDto>> UpdateReturnBookAsync(int loanId)
+    {
+        var commandResult = await _loanComannd.MarkAsAReturn(loanId);
+        if (!commandResult.IsSuccess) return commandResult.Error!;
+
+        var cardQueryResult = await _cardQuery.GetLibraryCardAsync(commandResult.Value.LibraryCardId);
+        if (!cardQueryResult.IsSuccess) return cardQueryResult.Error!;
+        var cardMap = CardMaper.ToLibraryCardAdminDto(cardQueryResult.Value);
+        return cardMap;
     }
 }

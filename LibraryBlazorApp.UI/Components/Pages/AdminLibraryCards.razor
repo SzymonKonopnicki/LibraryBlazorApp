@@ -6,6 +6,7 @@
 @using LibraryBlazorApp.UI.Components.Shared
 
 @inject IAdminLibraryCardHandler _cardHandler
+@inject IAdminBookHandler _bookHandler
 @inject IDialogService _dialogService
 @inject ISnackbar _snackbar
 
@@ -72,9 +73,6 @@ else
                                     <CardHeaderContent>
                                         <MudText Typo="Typo.h6">Library Card details:</MudText>
                                     </CardHeaderContent>
-                                    <CardHeaderActions>
-
-                                    </CardHeaderActions>
                                 </MudCardHeader>
                                 <MudCardContent>
                                     <MudStack Row="true">
@@ -120,12 +118,17 @@ else
                                     </MudStack>
 
                                     <MudTable Items="@card.Loans" T="LoanAdminDto" Context="loan" Hover="true" Dense="true" SortLabel="Sort By" Class="mt-4" Elevation="2" AllowUnsorted="false"
-                                                FixedHeader="true" FixedFooter="true" Striped="true" Bordered="true"
-                                                Filter="new Func<LoanAdminDto, bool>(FilterFunc)"
-                                                MultiSelection="true" @bind-SelectedItems="_selectedLoans">
+                                              FixedHeader="true" FixedFooter="true" Striped="true" Bordered="true"
+                                              Filter="new Func<LoanAdminDto, bool>(FilterFunc)" RowEditCommit="LoanHasBeenCommitted"
+                                                CanCancelEdit="true" IsEditRowSwitchingBlocked="false" RowEditPreview="BackupLoan" RowEditCancel="ResetLoanToOriginalValues"
+                                                @bind-SelectedItems="_selectedLoans">
                                         <ToolBarContent>
                                             <MudText Typo="Typo.h6">Loans</MudText>
                                             <MudSpacer />
+                                            <MudButton Class="mr-2" Variant="Variant.Filled"
+                                                       Color="Color.Tertiary"
+                                                       Disabled="@(card.CanBorrowBook == "No" ? true : false)"
+                                                       OnClick="@(() => DialogAddLoanOpenAsync(card.Id))">Add</MudButton>
 
                                             <MudTextField @bind-Value="_searchLoanString" Placeholder="Search"
                                                             Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -139,16 +142,37 @@ else
                                             <MudTh><MudTableSortLabel SortBy="new Func<LoanAdminDto, object>(x => x.PenaltyForDetention)">Penalty For Detention</MudTableSortLabel></MudTh>
                                             <MudTh><MudTableSortLabel SortBy="new Func<LoanAdminDto, object>(x => x.BorrowDate)">BorrowDate</MudTableSortLabel></MudTh>
                                             <MudTh><MudTableSortLabel SortBy="new Func<LoanAdminDto, object>(x => x.ReturnedDate)">Returned Date</MudTableSortLabel></MudTh>
+                                            <MudTh>Action</MudTh>
                                         </HeaderContent>
                                         <RowTemplate>
-                                            <MudTd DataLabel="Loan ID">@loan.Id</MudTd>
+                                            <MudTd Class="cursor-pointer" DataLabel="LoanID">@loan.Id</MudTd>
+                                            <MudTd Class="cursor-pointer" DataLabel="BookTitle">@loan.BookTitle</MudTd>
+                                            <MudTd Class="cursor-pointer" DataLabel="BookId">@loan.BookId</MudTd>
+                                            <MudTd Class="cursor-pointer" DataLabel="ReturnedStatus">@loan.ReturnedStatus</MudTd>
+                                            <MudTd Class="cursor-pointer" DataLabel="PenaltyForDetention">@loan.PenaltyForDetention</MudTd>
+                                            <MudTd Class="cursor-pointer" DataLabel="BorrowDate">@loan.BorrowDate.ToString(_datePatern)</MudTd>
+                                            <MudTd Class="cursor-pointer" DataLabel="ReturnedDate">@(loan.ReturnedDate?.ToString(_datePatern) ?? "")</MudTd>
+                                            <MudTd>
+                                                <MudButton Class="mr-2" Variant="Variant.Filled"
+                                                           Color="Color.Tertiary"
+                                                           Disabled="@(loan.ReturnedStatus == "Borrowed" ? false : true)"
+                                                           OnClick="@(() => DialogConfirmOpenAsync(loan.Id))">Return
+                                                </MudButton>
+
+                                            </MudTd>
+                                        </RowTemplate>
+                                        <RowEditingTemplate>
+                                            <MudTd DataLabel="LoanID">@loan.Id</MudTd>
                                             <MudTd DataLabel="BookTitle">@loan.BookTitle</MudTd>
-                                            <MudTd DataLabel="BookTitle">@loan.BookId</MudTd>
+                                            <MudTd DataLabel="BookId">@loan.BookId</MudTd>
                                             <MudTd DataLabel="ReturnedStatus">@loan.ReturnedStatus</MudTd>
                                             <MudTd DataLabel="PenaltyForDetention">@loan.PenaltyForDetention</MudTd>
-                                            <MudTd DataLabel="BorrowDate">@loan.BorrowDate.ToString(_datePatern)</MudTd>
-                                            <MudTd DataLabel="ReturnedDate">@(loan.ReturnedDate?.ToString(_datePatern) ?? "")</MudTd>
-                                        </RowTemplate>
+                                            <MudTd DataLabel="BorrowDate">@loan.BorrowDate</MudTd>
+                                            <MudTd DataLabel="ReturnedDate">
+                                                <MudDatePicker Label="Format dd.MM.yyyy" Editable="true" DateFormat="dd.MM.yyyy"
+                                                    @bind-Date="loan.ReturnedDate" Placeholder="Select or write Date" />
+                                            </MudTd>
+                                        </RowEditingTemplate>
                                         <PagerContent>
                                             <MudTablePager PageSizeOptions="new int[] { 15, 50, 100 }" />
                                         </PagerContent>
@@ -177,7 +201,7 @@ else
     private HashSet<LibraryCardAdminDto> _selectedCards = new HashSet<LibraryCardAdminDto>();
     private HashSet<LoanAdminDto> _selectedLoans = new HashSet<LoanAdminDto>();
     private List<int> _expandedRows = new();
-
+    private LoanAdminDto? loanBeforeEdit;
     protected async override Task OnInitializedAsync()
     {
         var handlerResult = await _cardHandler.GetLibraryCardAdminDtoAsync();
@@ -193,7 +217,6 @@ else
         else
             _expandedRows.Add(id);
     }
-
     private async Task DeleteSelectedAsync()
     {
         var parameters = new DialogParameters<ConfirmDialog>
@@ -229,7 +252,49 @@ else
             }
         }
     }
+    private async Task DialogAddLoanOpenAsync(int cardId)
+    {
+        var bookHandlerResult = await _bookHandler.GetBooksForLoanAsync();
+        if (bookHandlerResult.IsSuccess)
+        {
+            List<LoanBookDto> loanBookDtos = bookHandlerResult.Value;
+            var parameters = new DialogParameters<LoanAddDialog>()
+            {
+                { x => x.LoanBookDtos, loanBookDtos }
+            };
+            var options = new DialogOptions
+            {
+                FullWidth = true,
+                MaxWidth = MaxWidth.Medium,
+                CloseOnEscapeKey = true,
+                BackdropClick = false,
+                CloseButton = true
+            };
+            var dialog = await _dialogService.ShowAsync<LoanAddDialog>($"Adding New Book", parameters, options);
+            var dialogResult = await dialog.Result;
 
+            if (!dialogResult.Canceled)
+            {
+                var newLoan = (LoanAddDto)dialogResult.Data;
+                newLoan.LibraryCardId = cardId;
+                var cardHandlerResult = await _cardHandler.AddLoanToCardDtoAsync(newLoan);
+
+                if (cardHandlerResult.IsSuccess)
+                {
+                    int index = _libraries.FindIndex(l => l.Id == cardId);
+                    _libraries[index] = cardHandlerResult.Value;
+                    _snackbar.Add($"Book Added to Card ID: {cardId}.", Severity.Success);
+                    StateHasChanged();
+                }
+                else
+                    _snackbar.Add($"Something went wrong {cardHandlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+            }
+        }
+        else
+        {
+            _snackbar.Add($"Something went wrong {bookHandlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+        }
+    }
     private async Task DialogAddLibraryCardOpenAsync()
     {
         var parameters = new DialogParameters<ClientAddDialog>();
@@ -259,6 +324,41 @@ else
                 _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
         }
     }
+    private async Task DialogConfirmOpenAsync(int loanId)
+    {
+        var parameters = new DialogParameters<ConfirmDialog>
+        {
+            { x => x.ContentText, "Was the book returned by the customer?" },
+            { x => x.ButtonText, "Yes" },
+            { x => x.Color, Color.Warning }
+        };
+
+        var options = new DialogOptions()
+        {
+            FullWidth = true,
+            MaxWidth = MaxWidth.ExtraSmall,
+            CloseOnEscapeKey = true,
+            BackdropClick = false,
+            CloseButton = true
+        };
+        var dialog = await _dialogService.ShowAsync<ConfirmDialog>("Book return", parameters, options);
+        var dialogResult = await dialog.Result;
+
+        if (!dialogResult.Canceled)
+        {
+            var handlerResult = await _cardHandler.UpdateReturnBookAsync(loanId);
+
+            if (handlerResult.IsSuccess)
+            {
+                int index = _libraries.FindIndex(l => l.Id == handlerResult.Value.Id);
+                _libraries[index] = handlerResult.Value;
+                _snackbar.Add($"Book returned.", Severity.Success);
+                StateHasChanged();
+            }
+            else
+                _snackbar.Add($"Something went wrong {handlerResult.Error?.Description ?? "Unknown error"}.", Severity.Info);
+        }
+    }
     private bool FilterFunc(LibraryCardAdminDto client) => FilterFunc(client, _searchString);
     private bool FilterFunc(LibraryCardAdminDto client, string searchString)
     {
@@ -277,5 +377,31 @@ else
             return true;
         return false;
     }
-
+    private void LoanHasBeenCommitted(object element)
+    {
+        //TODO: EDIT
+    }
+    private void BackupLoan(object loan)
+    {
+        loanBeforeEdit = new()
+        {
+            Id = ((LoanAdminDto)loan).Id,
+            BookId = ((LoanAdminDto)loan).BookId,
+            BookTitle = ((LoanAdminDto)loan).BookTitle,
+            ReturnedStatus = ((LoanAdminDto)loan).ReturnedStatus,
+            PenaltyForDetention = ((LoanAdminDto)loan).PenaltyForDetention,
+            BorrowDate = ((LoanAdminDto)loan).BorrowDate,
+            ReturnedDate = ((LoanAdminDto)loan).ReturnedDate,
+        };
+    }
+    private void ResetLoanToOriginalValues(object loan)
+    {
+        ((LoanAdminDto)loan).Id = loanBeforeEdit.Id;
+        ((LoanAdminDto)loan).BookId = loanBeforeEdit.BookId;
+        ((LoanAdminDto)loan).BookTitle = loanBeforeEdit.BookTitle;
+        ((LoanAdminDto)loan).ReturnedStatus = loanBeforeEdit.ReturnedStatus;
+        ((LoanAdminDto)loan).PenaltyForDetention = loanBeforeEdit.PenaltyForDetention;
+        ((LoanAdminDto)loan).BorrowDate = loanBeforeEdit.BorrowDate;
+        ((LoanAdminDto)loan).ReturnedDate = loanBeforeEdit.ReturnedDate;
+    }
 }
