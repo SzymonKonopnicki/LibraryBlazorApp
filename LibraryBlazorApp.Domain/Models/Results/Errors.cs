@@ -12,5 +12,7 @@ public static class Errors
     public static Error NoClientsAvailable { get; } = new("NoClientsAvailable ", ErrorType.NotFound, "No clients available.");
     public static Error LibraryCardNotFound { get; } = new("LibraryCardNotFound ", ErrorType.NotFound, "No Library Card available.");
     public static Error NoLibraryCardsAvailable { get; } = new("NoLibraryCardsAvailable ", ErrorType.NotFound, "No Library Cards available.");
+    public static Error LoanNotFound { get; } = new("LoanNotFound", ErrorType.NotFound, "No Loan available.");
+
 
 }
