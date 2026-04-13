@@ -24,4 +24,16 @@ public class AdminLibraryCardQuery : IAdminLibraryCardQuery
         if (!cards.Any()) return Errors.NoLibraryCardsAvailable;
         return cards;
     }
+
+    public async Task<Result<LibraryCard>> GetLibraryCardAsync(int cardId)
+    {
+        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        var cards = await dbContext.LibraryCards
+            .Include(c => c.Loans).ThenInclude(l => l.Book)
+            .Include(c => c.Client)
+            .FirstOrDefaultAsync(c => c.Id == cardId);
+
+        if (cards == null) return Errors.LibraryCardNotFound;
+        return cards;
+    }
 }
