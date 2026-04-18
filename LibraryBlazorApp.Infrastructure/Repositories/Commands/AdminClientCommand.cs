@@ -40,8 +40,6 @@ public class AdminClientCommand : IAdminClientCommand
         toUpdate.UpdatedAt = clientMap.UpdatedAt;
         toUpdate.Name = clientMap.Name;
         toUpdate.Surname = clientMap.Surname;
-        toUpdate.Email = clientMap.Email;
-        toUpdate.PhoneNumber = clientMap.PhoneNumber;
         toUpdate.Address.UpdatedAt = clientMap.Address.UpdatedAt;
         toUpdate.Address.Country = clientMap.Address.Country;
         toUpdate.Address.City = clientMap.Address.City;
