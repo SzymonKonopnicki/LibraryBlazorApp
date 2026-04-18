@@ -1,0 +1,13 @@
+﻿using LibraryBlazorApp.Application.Dto;
+using LibraryBlazorApp.Domain.Models.Results;
+
+namespace LibraryBlazorApp.Application.Interfaces.Admin;
+
+public interface IAdminLibraryCardHandler
+{
+    public Task<Result<List<LibraryCardAdminDto>>> GetLibraryCardAdminDtoAsync();
+    public Task<Result<int>> DeleteLibraryCardByIdsAsync(List<int> ids);
+    public Task<Result<LibraryCardAdminDto>> AddLibraryCardDtoAsync(ClientAddAdminDto clientAdd);
+    public Task<Result<LibraryCardAdminDto>> AddLoanToCardDtoAsync(LoanAddDto loanAdd);
+    public Task<Result<LibraryCardAdminDto>> UpdateReturnBookAsync(int loanId);
+}

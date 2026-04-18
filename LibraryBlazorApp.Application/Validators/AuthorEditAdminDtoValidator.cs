@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LibraryBlazorApp.Application.Dto;
+using LibraryBlazorApp.Application.Dto.Author;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LibraryBlazorApp.Application.Dto;
+using LibraryBlazorApp.Application.Dto.Author;
 
 namespace LibraryBlazorApp.Application.Validators;
 

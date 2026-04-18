@@ -1,7 +1,10 @@
 ﻿using FluentValidation;
 using LibraryBlazorApp.Application.Dto;
+using LibraryBlazorApp.Application.Dto.Author;
 using LibraryBlazorApp.Application.Handlers;
+using LibraryBlazorApp.Application.Handlers.Admin;
 using LibraryBlazorApp.Application.Interfaces;
+using LibraryBlazorApp.Application.Interfaces.Admin;
 using LibraryBlazorApp.Application.Validators;
 using Microsoft.Extensions.DependencyInjection;
 

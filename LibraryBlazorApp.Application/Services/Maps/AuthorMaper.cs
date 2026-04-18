@@ -1,4 +1,4 @@
-﻿using LibraryBlazorApp.Application.Dto;
+﻿using LibraryBlazorApp.Application.Dto.Author;
 using LibraryBlazorApp.Domain.Models;
 
 namespace LibraryBlazorApp.Application.Services.Maps;

@@ -1,9 +1,10 @@
 ﻿using LibraryBlazorApp.Application.Interfaces;
+using LibraryBlazorApp.Application.Interfaces.Admin;
 using LibraryBlazorApp.Infrastructure.Data;
 using LibraryBlazorApp.Infrastructure.Identity;
-using LibraryBlazorApp.Infrastructure.Repositories.Commands;
+using LibraryBlazorApp.Infrastructure.Repositories.Commands.Admin;
 using LibraryBlazorApp.Infrastructure.Repositories.Querie;
-using LibraryBlazorApp.Infrastructure.Repositories.Queries;
+using LibraryBlazorApp.Infrastructure.Repositories.Queries.Admin;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,9 +31,9 @@ public static class DependencyInjection
             .AddDefaultTokenProviders();
 
         services.AddScoped<IBookQuery, BookQuery>();
-        services.AddScoped<IBookAdminCommand, BookAdminCommand>();
-        services.AddScoped<IAuthorAdminQuery, AuthorAdminQuery>();
-        services.AddScoped<IAuthorAdminCommand, AuthorAdminCommand>();
+        services.AddScoped<IAdminBookCommand, AdminBookCommand>();
+        services.AddScoped<IAuthorAdminQuery, AdminAuthorQuery>();
+        services.AddScoped<IAdminAuthorCommand, AdminAuthorCommand>();
         services.AddScoped<IAdminClientQuery, AdminClientQuery>();
         services.AddScoped<IAdminClientCommand, AdminClientCommand>();
         services.AddScoped<IAdminLibraryCardQuery, AdminLibraryCardQuery>();
