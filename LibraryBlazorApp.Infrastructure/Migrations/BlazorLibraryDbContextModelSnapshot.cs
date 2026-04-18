@@ -541,11 +541,17 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("IdentityUserId")
+                    b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -560,9 +566,6 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("IdentityUserId")
-                        .IsUnique();
-
                     b.ToTable("Clients", (string)null);
 
                     b.HasData(
@@ -570,8 +573,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedAt = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "c7277975-d866-4d1c-84b0-8d9df1ac7058",
+                            Email = "adam.nowicki@example.com",
                             Name = "Adam",
+                            PhoneNumber = "500100200",
                             Surname = "Nowicki",
                             UpdatedAt = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -579,8 +583,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 2,
                             CreatedAt = new DateTime(2023, 7, 22, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "b5d8b1df-a9cf-4b2a-82ed-2e8538e1bda7",
+                            Email = "ewa.kaczmarek@example.com",
                             Name = "Ewa",
+                            PhoneNumber = "501200300",
                             Surname = "Kaczmarek",
                             UpdatedAt = new DateTime(2023, 7, 22, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -588,8 +593,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 3,
                             CreatedAt = new DateTime(2022, 11, 5, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "73af2f35-a9b2-40fa-9697-c1dee8166b26",
+                            Email = "piotr.mazur@example.com",
                             Name = "Piotr",
+                            PhoneNumber = "502300400",
                             Surname = "Mazur",
                             UpdatedAt = new DateTime(2022, 11, 5, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -597,8 +603,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 4,
                             CreatedAt = new DateTime(2021, 4, 19, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "ff49eb66-aefe-412d-8e5f-897f121f7f5d",
+                            Email = "karolina.dabrowska@example.com",
                             Name = "Karolina",
+                            PhoneNumber = "503400500",
                             Surname = "Dąbrowska",
                             UpdatedAt = new DateTime(2021, 4, 19, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -606,8 +613,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 5,
                             CreatedAt = new DateTime(2020, 9, 3, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "c1e499f0-e54f-4dad-a579-d865ed8075ef",
+                            Email = "michal.piotrowski@example.com",
                             Name = "Michał",
+                            PhoneNumber = "504500600",
                             Surname = "Piotrowski",
                             UpdatedAt = new DateTime(2020, 9, 3, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -615,8 +623,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 6,
                             CreatedAt = new DateTime(2022, 2, 28, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "241b6d78-2354-46b3-8ab8-63c68bbdf631",
+                            Email = "natalia.grabowska@example.com",
                             Name = "Natalia",
+                            PhoneNumber = "505600700",
                             Surname = "Grabowska",
                             UpdatedAt = new DateTime(2022, 2, 28, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -624,8 +633,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 7,
                             CreatedAt = new DateTime(2021, 6, 11, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "3a21d428-508c-4a7a-b686-2724879c764a",
+                            Email = "krzysztof.pawlak@example.com",
                             Name = "Krzysztof",
+                            PhoneNumber = "506700800",
                             Surname = "Pawlak",
                             UpdatedAt = new DateTime(2021, 6, 11, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -633,8 +643,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 8,
                             CreatedAt = new DateTime(2020, 12, 24, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "39a1cce9-9123-4861-bf17-2909a7a1dff6",
+                            Email = "magdalena.michalska@example.com",
                             Name = "Magdalena",
+                            PhoneNumber = "507800900",
                             Surname = "Michalska",
                             UpdatedAt = new DateTime(2020, 12, 24, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -642,8 +653,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 9,
                             CreatedAt = new DateTime(2001, 5, 30, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "be32eec5-8f03-4eaa-99d6-b2eebeebfce8",
+                            Email = "pawel.krol@example.com",
                             Name = "Paweł",
+                            PhoneNumber = "508900100",
                             Surname = "Król",
                             UpdatedAt = new DateTime(2001, 5, 30, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
@@ -651,8 +663,9 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         {
                             Id = 10,
                             CreatedAt = new DateTime(2020, 8, 17, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IdentityUserId = "03e12965-b521-4052-894b-e5a7ef44b9d1",
+                            Email = "agnieszka.wieczorek@example.com",
                             Name = "Agnieszka",
+                            PhoneNumber = "509100200",
                             Surname = "Wieczorek",
                             UpdatedAt = new DateTime(2020, 8, 17, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
@@ -955,366 +968,6 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("LibraryBlazorApp.Infrastructure.Identity.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "c7277975-d866-4d1c-84b0-8d9df1ac7058",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-1",
-                            Email = "client1@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT1@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT1@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-1",
-                            TwoFactorEnabled = false,
-                            UserName = "client1@library.com"
-                        },
-                        new
-                        {
-                            Id = "b5d8b1df-a9cf-4b2a-82ed-2e8538e1bda7",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-2",
-                            Email = "client2@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT2@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT2@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-2",
-                            TwoFactorEnabled = false,
-                            UserName = "client2@library.com"
-                        },
-                        new
-                        {
-                            Id = "73af2f35-a9b2-40fa-9697-c1dee8166b26",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-3",
-                            Email = "client3@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT3@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT3@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-3",
-                            TwoFactorEnabled = false,
-                            UserName = "client3@library.com"
-                        },
-                        new
-                        {
-                            Id = "ff49eb66-aefe-412d-8e5f-897f121f7f5d",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-4",
-                            Email = "client4@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT4@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT4@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-4",
-                            TwoFactorEnabled = false,
-                            UserName = "client4@library.com"
-                        },
-                        new
-                        {
-                            Id = "c1e499f0-e54f-4dad-a579-d865ed8075ef",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-5",
-                            Email = "client5@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT5@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT5@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-5",
-                            TwoFactorEnabled = false,
-                            UserName = "client5@library.com"
-                        },
-                        new
-                        {
-                            Id = "241b6d78-2354-46b3-8ab8-63c68bbdf631",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-6",
-                            Email = "client6@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT6@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT6@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-6",
-                            TwoFactorEnabled = false,
-                            UserName = "client6@library.com"
-                        },
-                        new
-                        {
-                            Id = "3a21d428-508c-4a7a-b686-2724879c764a",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-7",
-                            Email = "client7@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT7@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT7@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-7",
-                            TwoFactorEnabled = false,
-                            UserName = "client7@library.com"
-                        },
-                        new
-                        {
-                            Id = "39a1cce9-9123-4861-bf17-2909a7a1dff6",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-8",
-                            Email = "client8@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT8@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT8@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-8",
-                            TwoFactorEnabled = false,
-                            UserName = "client8@library.com"
-                        },
-                        new
-                        {
-                            Id = "be32eec5-8f03-4eaa-99d6-b2eebeebfce8",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-9",
-                            Email = "client9@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT9@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT9@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-9",
-                            TwoFactorEnabled = false,
-                            UserName = "client9@library.com"
-                        },
-                        new
-                        {
-                            Id = "03e12965-b521-4052-894b-e5a7ef44b9d1",
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "STATIC-CONCURRENCY-10",
-                            Email = "client10@library.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            NormalizedEmail = "CLIENT10@LIBRARY.COM",
-                            NormalizedUserName = "CLIENT10@LIBRARY.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKD/HLWMXPpfstJQVV72WSuN0Y4ep3TYG/qS9EGGtqM6ldvU7oe3wbMVx9gkwuzOrA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "STATIC-STAMP-10",
-                            TwoFactorEnabled = false,
-                            UserName = "client10@library.com"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("AspNetUserLogins", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId", "LoginProvider", "Name");
-
-                    b.ToTable("AspNetUserTokens", (string)null);
-                });
-
             modelBuilder.Entity("LibraryBlazorApp.Domain.Models.Address", b =>
                 {
                     b.HasOne("LibraryBlazorApp.Domain.Models.Client", "Client")
@@ -1335,15 +988,6 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Author");
-                });
-
-            modelBuilder.Entity("LibraryBlazorApp.Domain.Models.Client", b =>
-                {
-                    b.HasOne("LibraryBlazorApp.Infrastructure.Identity.ApplicationUser", null)
-                        .WithOne("Client")
-                        .HasForeignKey("LibraryBlazorApp.Domain.Models.Client", "IdentityUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("LibraryBlazorApp.Domain.Models.LibraryCard", b =>
@@ -1376,57 +1020,6 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
                     b.Navigation("LibraryCard");
                 });
 
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
-                {
-                    b.HasOne("LibraryBlazorApp.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
-                {
-                    b.HasOne("LibraryBlazorApp.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LibraryBlazorApp.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
-                {
-                    b.HasOne("LibraryBlazorApp.Infrastructure.Identity.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("LibraryBlazorApp.Domain.Models.Author", b =>
                 {
                     b.Navigation("Books");
@@ -1449,11 +1042,6 @@ namespace LibraryBlazorApp.Infrastructure.Migrations
             modelBuilder.Entity("LibraryBlazorApp.Domain.Models.LibraryCard", b =>
                 {
                     b.Navigation("Loans");
-                });
-
-            modelBuilder.Entity("LibraryBlazorApp.Infrastructure.Identity.ApplicationUser", b =>
-                {
-                    b.Navigation("Client");
                 });
 #pragma warning restore 612, 618
         }

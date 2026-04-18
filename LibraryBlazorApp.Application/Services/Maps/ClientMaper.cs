@@ -14,6 +14,8 @@ public static class ClientMaper
             UpdatedAt = c.UpdatedAt,
             Name = c.Name,
             Surname = c.Surname,
+            Email = c.Email,
+            PhoneNumber = c.PhoneNumber,
             City = c.Address.City,
             Street = c.Address.Street,
             PostalCode = c.Address.PostalCode,
@@ -29,6 +31,8 @@ public static class ClientMaper
             UpdatedAt = client.UpdatedAt,
             Name = client.Name,
             Surname = client.Surname,
+            Email = client.Email,
+            PhoneNumber = client.PhoneNumber,
             City = client.Address.City,
             Street = client.Address.Street,
             PostalCode = client.Address.PostalCode,
@@ -44,6 +48,8 @@ public static class ClientMaper
             UpdatedAt = DateTime.UtcNow,
             Name = clientAdd.Name,
             Surname = clientAdd.Surname,
+            Email = clientAdd.Email,
+            PhoneNumber = clientAdd.PhoneNumber,
             Address = new Address()
             {
                 CreatedAt = DateTime.UtcNow,
@@ -64,6 +70,8 @@ public static class ClientMaper
             UpdatedAt = DateTime.UtcNow,
             Name = clientEdit.Name,
             Surname= clientEdit.Surname,
+            Email = clientEdit.Email,
+            PhoneNumber = clientEdit.PhoneNumber,
             Address = new()
             {
                 CreatedAt = DateTime.UtcNow,
