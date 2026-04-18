@@ -1,0 +1,36 @@
+﻿@page "/LibraryCard"
+@using LibraryBlazorApp.Domain.Models.Enums
+@using LibraryBlazorApp.Infrastructure.Identity
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+
+<PageTitle>Library Card</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Your library card history</MudText>
+<MudText Typo="Typo.body1" Class="mb-8">This compoennt uses metohds to shows History of Library Card for a loged user from Data base.</MudText>
+
+@if (errorMsg is not null)
+{
+    <MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Start">
+        Error Type: @errorType
+        <br />
+        Error message: @errorMsg
+    </MudAlert>
+}
+else
+{
+    
+}
+
+@code {
+    private string? errorMsg;
+    private ErrorType? errorType;
+
+
+    protected override Task OnInitializedAsync()
+    {
+        Console.WriteLine(SignInManager);
+        return base.OnInitializedAsync();
+    }
+}

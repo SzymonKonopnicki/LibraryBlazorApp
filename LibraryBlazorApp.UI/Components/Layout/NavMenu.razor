@@ -1,13 +1,46 @@
-﻿<MudNavMenu Class="mud-width-full">
+﻿@inject NavigationManager NavigationManager
+
+<MudNavMenu Class="mud-width-full">
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Dashboard</MudNavLink>
-    <MudNavGroup Title="Client" Icon="@Icons.Material.Filled.Settings" Expanded="true">
-        <MudNavLink Href="books" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Book">Library</MudNavLink>
-        <MudNavLink Disabled="true" Href="LibraryCards" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AccountBox">Library Card</MudNavLink>
-    </MudNavGroup>
-    <MudNavGroup Title="Admin" Icon="@Icons.Material.Filled.Settings" Expanded="true">
-        <MudNavLink Href="/admin/books" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Book">Books</MudNavLink>
-        <MudNavLink Href="/admin/authors" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person2">Authors</MudNavLink>
-        <MudNavLink Href="/admin/clients" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Clients</MudNavLink>
-        <MudNavLink Href="/admin/LibraryCards" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.CreditCard">Library Cards</MudNavLink>
-    </MudNavGroup>
+        <AuthorizeView>
+            <Authorized>
+                <MudNavGroup Title="Admin" Icon="@Icons.Material.Filled.Settings" Expanded="true">
+                    <MudNavLink Href="/admin/books" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Book">Books</MudNavLink>
+                    <MudNavLink Href="/admin/authors" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person2">Authors</MudNavLink>
+                    <MudNavLink Href="/admin/clients" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Clients</MudNavLink>
+                    <MudNavLink Href="/admin/LibraryCards" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.CreditCard">Library Cards</MudNavLink>
+                </MudNavGroup>
+                <MudNavGroup Title="Client" Icon="@Icons.Material.Filled.Settings" Expanded="true">
+                    <MudNavLink Href="books" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Book">Library</MudNavLink>
+                    <MudNavLink Href="LibraryCard" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.AccountBox">Library Card</MudNavLink>
+                </MudNavGroup>
+
+            </Authorized>
+            <NotAuthorized>
+                <MudNavGroup Title="Client" Icon="@Icons.Material.Filled.Settings" Expanded="true">
+                    <MudNavLink Href="books" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Book">Library</MudNavLink>
+                </MudNavGroup>
+            </NotAuthorized>
+        </AuthorizeView>
+
 </MudNavMenu>
+@code {
+    private string? currentUrl;
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+
+}
