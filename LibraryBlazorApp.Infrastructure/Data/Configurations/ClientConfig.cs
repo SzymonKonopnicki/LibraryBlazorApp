@@ -27,11 +27,5 @@ public class ClientConfig : IEntityTypeConfiguration<Client>
 
         builder.Property(x => x.Surname)
             .HasMaxLength(100);
-
-        builder.Property(x => x.Email)
-            .HasMaxLength(100);
-
-        builder.Property(x => x.PhoneNumber)
-            .HasMaxLength(100);
     }
 }
