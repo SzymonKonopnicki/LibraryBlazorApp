@@ -1,9 +1,9 @@
-using LibraryBlazorApp.Application;
+﻿using LibraryBlazorApp.Application;
 using LibraryBlazorApp.Domain;
 using LibraryBlazorApp.Infrastructure;
+using LibraryBlazorApp.UI;
 using LibraryBlazorApp.UI.Components;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,12 +17,10 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddApplication();
 builder.Services.AddDomain();
-
 var conString = builder.Configuration.GetConnectionString("DefaultConnection") ??
      throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-
 builder.Services.AddInfrastructure(conString);
-
+builder.Services.AddIdentityUi();
 
 var app = builder.Build();
 
@@ -36,11 +34,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthorization();
 
 app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
+app.MapAdditionalIdentityEndpoints(); ;
 
 app.Run();

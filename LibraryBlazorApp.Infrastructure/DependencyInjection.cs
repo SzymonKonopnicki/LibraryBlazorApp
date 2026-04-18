@@ -1,8 +1,10 @@
 ﻿using LibraryBlazorApp.Application.Interfaces;
 using LibraryBlazorApp.Infrastructure.Data;
+using LibraryBlazorApp.Infrastructure.Identity;
 using LibraryBlazorApp.Infrastructure.Repositories.Commands;
 using LibraryBlazorApp.Infrastructure.Repositories.Querie;
 using LibraryBlazorApp.Infrastructure.Repositories.Queries;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -14,6 +16,18 @@ public static class DependencyInjection
     {
         services.AddDbContextFactory<BlazorLibraryDbContext>(options =>
             options.UseSqlServer(connectionString));
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = IdentityConstants.ApplicationScheme;
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        })
+        .AddIdentityCookies();
+
+        services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<BlazorLibraryDbContext>()
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
 
         services.AddScoped<IBookQuery, BookQuery>();
         services.AddScoped<IBookAdminCommand, BookAdminCommand>();
