@@ -2,8 +2,7 @@
 
 public class Client : Person
 {
-    public string Email { get; set; } = "";
-    public string PhoneNumber { get; set; } = "";
+    public string IdentityUserId { get; set; } = "";
     public Address Address { get; set; } = null!;
     public LibraryCard LibraryCard { get; set; } = null!;
 }

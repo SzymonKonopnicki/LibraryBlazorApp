@@ -24,8 +24,6 @@ public static class CardMaper
             ClientId = c.Client.Id,
             ClienName = c.Client.Name,
             ClienSurname = c.Client.Surname,
-            ClienEmail = c.Client.Email,
-            ClienPhoneNumber = c.Client.PhoneNumber,
             CanBorrowBook = c.CanBorrowBook(),
             PenaltyForBorrow = c.PenaltyForBorrow(),
             QuantityOfBorrowedBook = c.QuantityOfBorrowedBook()
@@ -51,8 +49,6 @@ public static class CardMaper
             ClientId = card.Client.Id,
             ClienName = card.Client.Name,
             ClienSurname = card.Client.Surname,
-            ClienEmail = card.Client.Email,
-            ClienPhoneNumber = card.Client.PhoneNumber,
             CanBorrowBook = card.CanBorrowBook(),
             PenaltyForBorrow = card.PenaltyForBorrow(),
             QuantityOfBorrowedBook = card.QuantityOfBorrowedBook()
