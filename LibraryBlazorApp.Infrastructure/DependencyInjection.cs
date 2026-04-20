@@ -27,6 +27,7 @@ public static class DependencyInjection
         .AddIdentityCookies();
 
         services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<BlazorLibraryDbContext>()
             .AddSignInManager()
             .AddDefaultTokenProviders();
