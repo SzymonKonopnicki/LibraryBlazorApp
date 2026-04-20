@@ -41,10 +41,14 @@ public class BlazorLibraryDbContext : IdentityDbContext<ApplicationUser>
             "03e12965-b521-4052-894b-e5a7ef44b9d1"
         };
 
-        modelBuilder.SeedBooks();
-        modelBuilder.SeedAuthors();
+
         modelBuilder.SeedAppUser(guidTab);
         modelBuilder.SeedClients(guidTab);
+        modelBuilder.SeedRoles();
+        modelBuilder.SeedAssignRoles();
+
+        modelBuilder.SeedBooks();
+        modelBuilder.SeedAuthors();
         modelBuilder.SeedAddresses();
         modelBuilder.SeedLibraryCards();
         modelBuilder.SeedLoans();

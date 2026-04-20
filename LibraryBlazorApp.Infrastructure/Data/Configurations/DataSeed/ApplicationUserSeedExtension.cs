@@ -7,6 +7,7 @@ public static class ApplicationUserSeedExtension
 {
     public static void SeedAppUser(this ModelBuilder modelBuilder, string[] guidTab)
     {
+        //Client: client1@library.com is Administrator
         //Password: Test123!
         modelBuilder.Entity<ApplicationUser>().HasData(
             new ApplicationUser
