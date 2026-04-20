@@ -13,6 +13,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryBlazorApp.UI", "Libr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryBlazorApp.Domain.Tests", "LibraryBlazorApp.Domain.Tests\LibraryBlazorApp.Domain.Tests.csproj", "{1BF8DF0C-7BDE-42B9-BB29-9C865F679DF6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "QA", "QA", "{8FB176BD-0036-D269-15EA-F86E90622887}"
+	ProjectSection(SolutionItems) = preProject
+		QA\Admin-books-bugs.md = QA\Admin-books-bugs.md
+		QA\Admin-books.md = QA\Admin-books.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
