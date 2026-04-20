@@ -1,36 +1,160 @@
 ﻿@page "/LibraryCard"
+@using LibraryBlazorApp.Application.Dto.LibraryCard
+@using LibraryBlazorApp.Application.Dto.Loan
+@using LibraryBlazorApp.Application.Interfaces
 @using LibraryBlazorApp.Domain.Models.Enums
 @using LibraryBlazorApp.Infrastructure.Identity
 @using Microsoft.AspNetCore.Identity
 
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<ApplicationUser> _signInManager
+@inject ILibraryCardHandler _cardHandler
+@inject ISnackbar _snacbar
+@inject NavigationManager _navigationManager
 
 <PageTitle>Library Card</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">Your library card history</MudText>
 <MudText Typo="Typo.body1" Class="mb-8">This compoennt uses metohds to shows History of Library Card for a loged user from Data base.</MudText>
 
-@if (errorMsg is not null)
+@if (_errorMsg is not null)
 {
     <MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Start">
-        Error Type: @errorType
+        Error Type: @_errorType
         <br />
-        Error message: @errorMsg
+        Error message: @_errorMsg
     </MudAlert>
 }
 else
 {
-    
+    <MudTr>
+        <td colspan="8">
+            <MudStack Spacing="4" Class="border-solid border-2 border-gray-300 pa-4">
+                @* Card DETAIL *@
+                <MudCard Elevation="3">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6">Library Card details:</MudText>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardContent>
+                        <MudStack Row="true">
+                            <MudItem xs="6" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.Id" Label="Library Card ID" Variant="Variant.Text">@_libraryCardDto.Id</MudTextField>
+                            </MudItem>
+                            <MudItem xs="6" Class="pa-3">
+                                <MudTextField ReadOnly="true"
+                                              Value="@_libraryCardDto.CreatedAt.ToString("dd.MM.yyyy")"
+                                              Label="Library Card Created At"
+                                              Variant="Variant.Filled" />
+                            </MudItem>
+                        </MudStack>
+                        <MudStack Row="true">
+                            <MudItem xs="4" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.CanBorrowBook" Label="Can Borrow Book" Variant="Variant.Text">@_libraryCardDto.CanBorrowBook</MudTextField>
+                            </MudItem>
+                            <MudItem xs="4" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.QuantityOfBorrowedBook" Label="Borrowed Quantity (max 3)" Variant="Variant.Text">@_libraryCardDto.QuantityOfBorrowedBook</MudTextField>
+                            </MudItem>
+                            <MudItem xs="4" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.PenaltyForBorrow" Label="Penalty For Borrow" Variant="Variant.Text">@_libraryCardDto.PenaltyForBorrow</MudTextField>
+                            </MudItem>
+                        </MudStack>
+                        <MudStack Row="true">
+                            <MudItem xs="4" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.ClientId" Label="Client ID" Variant="Variant.Text">@_libraryCardDto.ClientId</MudTextField>
+                            </MudItem>
+                            <MudItem xs="4" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.ClienName" Label="Client Name" Variant="Variant.Text">@_libraryCardDto.ClienName</MudTextField>
+                            </MudItem>
+                            <MudItem xs="4" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.ClienSurname" Label="Client Surname" Variant="Variant.Text">@_libraryCardDto.ClienSurname</MudTextField>
+                            </MudItem>
+                        </MudStack>
+                        <MudStack Row="true">
+                            <MudItem xs="6" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.ClienEmail" Label="Client Email" Variant="Variant.Text">@_libraryCardDto.ClienEmail</MudTextField>
+                            </MudItem>
+                            <MudItem xs="6" Class="pa-3">
+                                <MudTextField ReadOnly="true" @bind-Value="_libraryCardDto.ClienPhoneNumber" Label="Client Phone Number" Variant="Variant.Text">@_libraryCardDto.ClienPhoneNumber</MudTextField>
+                            </MudItem>
+                        </MudStack>
+
+                        <MudTable Items="@_libraryCardDto.Loans" T="LoanDto" Context="loan" Hover="true" Dense="true" SortLabel="Sort By" Class="mt-4" Elevation="2" AllowUnsorted="false"
+                                  FixedHeader="true" FixedFooter="true" Striped="true" Bordered="true"
+                                  Filter="new Func<LoanDto, bool>(FilterFunc)">
+                            <ToolBarContent>
+                                <MudText Typo="Typo.h6">Loans</MudText>
+                                <MudSpacer />
+
+                                <MudTextField @bind-Value="_searchLoanString" Placeholder="Search"
+                                              Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+                            </ToolBarContent>
+                            <HeaderContent>
+                                <MudTh><MudTableSortLabel InitialDirection="SortDirection.Ascending" SortBy="new Func<LoanDto, object>(x => x.Id)">ID</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<LoanDto, object>(x => x.BookTitle)">Book Title</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<LoanDto, object>(x => x.BookId)">Book Id</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<LoanDto, object>(x => x.ReturnedStatus)">Returned Status</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<LoanDto, object>(x => x.PenaltyForDetention)">Penalty For Detention</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<LoanDto, object>(x => x.BorrowDate)">BorrowDate</MudTableSortLabel></MudTh>
+                                <MudTh><MudTableSortLabel SortBy="new Func<LoanDto, object>(x => x.ReturnedDate)">Returned Date</MudTableSortLabel></MudTh>
+                            </HeaderContent>
+                            <RowTemplate>
+                                <MudTd Class="cursor-pointer" DataLabel="LoanID">@loan.Id</MudTd>
+                                <MudTd Class="cursor-pointer" DataLabel="BookTitle">@loan.BookTitle</MudTd>
+                                <MudTd Class="cursor-pointer" DataLabel="BookId">@loan.BookId</MudTd>
+                                <MudTd Class="cursor-pointer" DataLabel="ReturnedStatus">@loan.ReturnedStatus</MudTd>
+                                <MudTd Class="cursor-pointer" DataLabel="PenaltyForDetention">@loan.PenaltyForDetention</MudTd>
+                                <MudTd Class="cursor-pointer" DataLabel="BorrowDate">@loan.BorrowDate.ToString(_datePatern)</MudTd>
+                                <MudTd Class="cursor-pointer" DataLabel="ReturnedDate">@(loan.ReturnedDate?.ToString(_datePatern) ?? "")</MudTd>
+                            </RowTemplate>
+                            <PagerContent>
+                                <MudTablePager PageSizeOptions="new int[] { 15, 50, 100 }" />
+                            </PagerContent>
+                        </MudTable>
+                    </MudCardContent>
+                </MudCard>
+            </MudStack>
+        </td>
+    </MudTr>
+
 }
 
 @code {
-    private string? errorMsg;
-    private ErrorType? errorType;
+    private string? _errorMsg;
+    private ErrorType? _errorType;
+    private LibraryCardDto _libraryCardDto;
+    private string _searchLoanString = "";
+    private readonly string _datePatern = "dd/MM/yyyy";
 
-
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine(SignInManager);
-        return base.OnInitializedAsync();
+        var userId = _signInManager.UserManager.GetUserIdAsync;
+        if (userId == null)
+        {
+            _navigationManager.NavigateTo("/Account/NoAuthorize", true);
+        }
+        else
+        {
+            var handlerResult = await _cardHandler.GetLibraryCardDtoAsync(userId.Method.Name);
+            if (handlerResult.IsSuccess)
+            {
+                _libraryCardDto = handlerResult.Value;
+            }
+        }
     }
+
+    private bool FilterFunc(LoanDto client) => FilterFunc(client, _searchLoanString);
+    private bool FilterFunc(LoanDto client, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if ($"{client.Id}".Contains(searchString))
+            return true;
+        if ($"{client.BookTitle}".Contains(searchString))
+            return true;
+
+        return false;
+    }
+
 }

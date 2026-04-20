@@ -2,7 +2,7 @@
 
 <MudNavMenu Class="mud-width-full">
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Dashboard</MudNavLink>
-        <AuthorizeView>
+        <AuthorizeView Roles="Admin">
             <Authorized>
                 <MudNavGroup Title="Admin" Icon="@Icons.Material.Filled.Settings" Expanded="true">
                     <MudNavLink Href="/admin/books" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Book">Books</MudNavLink>

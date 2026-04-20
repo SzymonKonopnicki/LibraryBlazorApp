@@ -15,6 +15,8 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<IBookHandler, BookHandler>();
+        services.AddScoped<ILibraryCardHandler, LibraryCardHandler>();
+
         services.AddScoped<IAdminBookHandler, AdminBookHandler>();
         services.AddScoped<IAdminAuthorHandler, AdminAuthorHandler>();
         services.AddScoped<IAdminClientHandler, AdminClientHandler>();

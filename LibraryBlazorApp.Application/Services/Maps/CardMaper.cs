@@ -1,4 +1,6 @@
 ﻿using LibraryBlazorApp.Application.Dto;
+using LibraryBlazorApp.Application.Dto.LibraryCard;
+using LibraryBlazorApp.Application.Dto.Loan;
 using LibraryBlazorApp.Domain.Models;
 
 namespace LibraryBlazorApp.Application.Services.Maps;
@@ -54,5 +56,28 @@ public static class CardMaper
             QuantityOfBorrowedBook = card.QuantityOfBorrowedBook()
         };
     }
-
+    public static LibraryCardDto ToLibraryCardDto(LibraryCard card)
+    {
+        return new LibraryCardDto()
+        {
+            Id = card.Id,
+            CreatedAt = card.CreatedAt,
+            Loans = card.Loans.Select(l => new LoanDto()
+            {
+                Id = l.Id,
+                BookId = l.BookId,
+                BookTitle = l.Book.Title,
+                ReturnedStatus = l.ReturnedStatus(),
+                PenaltyForDetention = l.PenaltyForDetention(),
+                BorrowDate = l.BorrowDate,
+                ReturnedDate = l.ReturnedDate ?? null,
+            }).ToList(),
+            ClientId = card.Client.Id,
+            ClienName = card.Client.Name,
+            ClienSurname = card.Client.Surname,
+            CanBorrowBook = card.CanBorrowBook(),
+            PenaltyForBorrow = card.PenaltyForBorrow(),
+            QuantityOfBorrowedBook = card.QuantityOfBorrowedBook()
+        };
+    }
 }

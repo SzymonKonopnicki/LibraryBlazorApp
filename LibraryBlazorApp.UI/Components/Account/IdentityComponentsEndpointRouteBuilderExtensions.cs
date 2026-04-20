@@ -21,6 +21,11 @@ namespace Microsoft.AspNetCore.Routing
                 return TypedResults.LocalRedirect($"/Account/Login?message=Please+confirm+account");
             });
 
+            accountGroup.MapGet("/NoAuthorize", () =>
+            {
+                return TypedResults.LocalRedirect($"/Account/Login?message=Please+confirm+login");
+            });
+
             accountGroup.MapPost("/Logout", async (
                 ClaimsPrincipal user,
                 SignInManager<ApplicationUser> signInManager,

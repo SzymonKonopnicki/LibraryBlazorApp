@@ -11,7 +11,6 @@ public static class IdentityUiRegistration
     {
         services.AddCascadingAuthenticationState();
 
-
         services.AddScoped<IdentityUserAccessor>();
         services.AddScoped<IdentityRedirectManager>();
 
